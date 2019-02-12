@@ -1,13 +1,14 @@
 <template>
     <div>
         <h1>Hello,Vue!简单的增删改查</h1>
+        <!-- 基础表格 -->
         <el-row>
             <el-col :span="22"  :offset="1">
                 <div style="margin-top:30px;">
                     <!-- 操作 -->
                     <ul class="fr">
                         <li>
-                            <el-button type="primary"><i class="el-icon-plus iconss"></i>添加用户</el-button>
+                            <el-button type="primary" @click="dialogCreateVisible = true"><i class="el-icon-plus iconss"></i>添加用户</el-button>
                             <el-button type="danger" icon="el-icon-delete" :disabled="this.selected.length==0" @click="removeUsers()">删除用户</el-button>
                         </li>
                     </ul>
@@ -58,6 +59,40 @@
                 </div>
             </el-col>
         </el-row>
+        <!-- 创建用户 -->
+        <el-dialog title="创建用户"
+                   :visible.sync="dialogCreateVisible"
+                   width="30%"
+                   :before-close="handleClose">
+            <el-form :model="createUser" label-position="right">
+                <el-form-item label="姓名" prop="name">
+                    <el-input v-model="createUser.name"></el-input> 
+                </el-form-item>
+                <el-form-item label="密码" prop="password">
+                    <el-input v-model="createUser.password"
+                              type="password">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="确认密码" prop="checkPass">
+                    <el-input v-model="createUser.checkPass"
+                              type="password">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="电话" prop="phone">
+                    <el-input v-model="createUser.phone"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="createUser.email"></el-input>
+                </el-form-item>
+                <el-form-item label="是否启用">
+                    <el-switch v-model="createUser.is_active"></el-switch>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogCreateVisible=false">取消</el-button>
+                <el-button @click="createUsers" type="primary">确定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -91,9 +126,19 @@ export default {
                 create_time: '0324',
                 is_active: 1
             }],
+            createUser: {
+                id: '',
+                username: '',
+                password: '',
+                checkPass: '',
+                phone: '',
+                email: '',
+                is_active: true
+            },
             filter: {
                 sorts: ''
             },
+            dialogCreateVisible: false,
             selected: [] //已选项
         }
     },
@@ -162,6 +207,12 @@ export default {
                     message: '已取消删除！'
                 })
             });
+        },
+        //手动关闭提示
+        handleClose(done) {
+            this.$confirm('确认关闭？').then(_ => {
+                done();
+            }).catch(_ => {});
         },
         //编辑当前用户信息
         setCurrent(row, index) {
