@@ -3,12 +3,12 @@
         <h1>Hello,Vue!简单的增删改查</h1>
         <el-row>
             <el-col :span="22"  :offset="1">
-                <div class="bg-purple" style="margin-top:30px;">
+                <div style="margin-top:30px;">
                     <!-- 操作 -->
-                    <ul>
+                    <ul class="fr">
                         <li>
                             <el-button type="primary"><i class="el-icon-plus iconss"></i>添加用户</el-button>
-                            <el-button type="danger" icon="el-icon-delete" disabled>删除用户</el-button>
+                            <el-button type="danger" icon="el-icon-delete" :disabled="this.selected.length==0" @click="removeUsers()">删除用户</el-button>
                         </li>
                     </ul>
                     <!-- 用户列表 -->
@@ -17,14 +17,19 @@
                               stripe
                               style="width:100%;margin-top:20px;"
                               height="443"
-                              >
-                        <el-table-column type="selection"></el-table-column>
+                              :default-sort="{prop: ['username','create_time'],order: 'descending'}"
+                              @selection-change="tableSelectionChange">
+                        <el-table-column type="selection"
+                                         width="60">
+                        </el-table-column>
                         <el-table-column prop="username"
                                          label="用户名"
-                                         sortable="custom">
+                                         sortable
+                                         width="100">
                         </el-table-column>
                         <el-table-column prop="name"
-                                         label="姓名">
+                                         label="姓名"
+                                         width="80">
                         </el-table-column>
                         <el-table-column prop="phone"
                                          label="手机">
@@ -34,7 +39,7 @@
                         </el-table-column>
                         <el-table-column prop="create_time"
                                          label="注册日期"
-                                         sortable="custom">
+                                         sortable>
                         </el-table-column>
                         <el-table-column prop="is_active"
                                          label="状态"
@@ -44,10 +49,10 @@
                         </el-table-column>
                         <el-table-column label="操作"
                                          width="250">          
-                            <span>
-                                <el-button type="danger" size="small">删除</el-button>
-                                <el-button type="success" size="small">编辑</el-button>
-                            </span>
+                            <template slot-scope="scope">
+                                <el-button type="danger" size="small" @click="removeUser(scope.row,scope.$index)">删除</el-button>
+                                <el-button type="success" size="small" @click="setCurrent(scope.row,scope.$index)">编辑</el-button>
+                            </template>
                         </el-table-column>
                     </el-table>
                 </div>
@@ -67,9 +72,100 @@ export default {
                 name: '222',
                 phone: '333',
                 email: '444',
-                create_time: '555',
+                create_time: '0821',
                 is_active: 1
-            }]
+            },
+            {
+                username: '222',
+                name: '222',
+                phone: '333',
+                email: '444',
+                create_time: '1111',
+                is_active: 1
+            },
+            {
+                username: '333',
+                name: '222',
+                phone: '333',
+                email: '444',
+                create_time: '0324',
+                is_active: 1
+            }],
+            filter: {
+                sorts: ''
+            },
+            selected: [] //已选项
+        }
+    },
+    methods:{
+        getUsers(){
+            this.users = this.users;
+        },
+        /*
+        tableSortChange(val) {
+            if(val.prop != null) {
+                if(val.order === 'descending') {
+                    this.filter.sorts = '-' + val.prop;
+                } else {
+                    this.filter.sorts = '' + val.prop;
+                }
+            } else {
+                    this.filter.sorts = '';
+                }
+                this.getUsers();
+        },*/
+        //记录已选用户
+        tableSelectionChange(val) {
+            this.selected = val;
+        },
+        //删除单个用户
+        removeUser(row,index) {
+            this.$confirm('此操作将永久删除用户 ' + row.username + ',是否继续？', {
+                type: 'warning'
+            }).then(() => {
+                this.users.forEach((element, i) => {
+                    if(element.username == row.username) {
+                        this.users.splice(i,1)
+                    }
+                });
+                this.$message({
+                    type: 'success',
+                    message: '删除成功！'
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除！'
+                });
+            });
+        },
+        //删除多个用户
+        removeUsers(){
+            this.$confirm('此操作将永久删除已选的'+ this.selected.length +'条数据，是否继续？','提示',{
+                type: 'warning'
+            }).then(() => {
+                for(let i = 0; i < this.selected.length; i++) {
+                    let s = this.selected[i];
+                    this.users.forEach((element,index) => {
+                        if(s.username == element.username) {
+                            this.users.splice(index,1)
+                        }
+                    });
+                };
+                this.$message({
+                    type: 'success',
+                    message: '删除成功！'
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除！'
+                })
+            });
+        },
+        //编辑当前用户信息
+        setCurrent(row, index) {
+             
         }
     }
 }
@@ -78,4 +174,5 @@ export default {
 ul li{
     list-style: none
 }
+.fr{float:right}
 </style>
