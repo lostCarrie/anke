@@ -64,7 +64,7 @@
                    :visible.sync="dialogCreateVisible"
                    width="30%"
                    :before-close="handleClose">
-            <el-form :model="createUser" label-position="right">
+            <el-form label-position="right" ref="create" status-icon :rules="rules" :model="createUser" label-width="80px">
                 <el-form-item label="姓名" prop="name">
                     <el-input v-model="createUser.name"></el-input> 
                 </el-form-item>
@@ -101,6 +101,15 @@
 export default {
     name: '',
     data() {
+        var validatePass = (rule, value, callback) => {
+            if(value === '') {
+                callback(new Error('请再次输入密码'));
+            }else if(value !== this.createUser.password) {
+                callback(new Error('两次输入密码不一致！'));
+            }else {
+                callback();
+            }
+        }
         return {
             users: [{
                 username: '111',
@@ -134,6 +143,53 @@ export default {
                 phone: '',
                 email: '',
                 is_active: true
+            },
+            rules: {
+                name: [{
+                    required: true,
+                    message: '请输入姓名',
+                    trigger: 'blur'
+                }, {
+                    min: 3,
+                    max: 15,
+                    message: '长度在3到15个字符'
+                }],
+                username: [{
+                    required: true,
+                    message: '请输入用户名',
+                    trigger: 'blur'
+                }, {
+                    min: 3,
+                    max: 25,
+                    message: '长度在3到25个字符'
+                }, {
+                    pattern: /^[A-Za-z0-9]+$/,
+                    message: '用户名只能为字母和数字'
+                }],
+                password: [{
+                    required: true,
+                    message: '请输入密码',
+                    trigger: 'blur'
+                }, {
+                    min: 6,
+                    max: 25,
+                    message: '长度在6到25个字符'
+                }],
+                checkPass: [{
+                    require: true,
+                    message: '请再次输入密码',
+                    trigger: 'blur'
+                }, {
+                    validator: validatePass
+                }],
+                email: [{
+                    type: 'email',
+                    message: '邮件格式不正确'
+                }],
+                phone: [{
+                    pattern: /^1[34578]\d{9}$/,
+                    message: '请输入中国国内的手机号'
+                }]
             },
             filter: {
                 sorts: ''
@@ -196,7 +252,7 @@ export default {
                             this.users.splice(index,1)
                         }
                     });
-                };
+                }
                 this.$message({
                     type: 'success',
                     message: '删除成功！'
@@ -210,9 +266,20 @@ export default {
         },
         //手动关闭提示
         handleClose(done) {
-            this.$confirm('确认关闭？').then(_ => {
+            this.$confirm('确认关闭？').then(() => {
                 done();
-            }).catch(_ => {});
+            }).catch(() => {});
+        },
+        //创建新用户
+        createUsers() {
+            this.$refs.create.validate((valid) => {
+                if(valid) {
+                    alert('submit');
+                }else {
+                    console.log('error submit!');
+                    return false;
+                }
+            })
         },
         //编辑当前用户信息
         setCurrent(row, index) {
