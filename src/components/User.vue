@@ -94,6 +94,30 @@
                 <el-button @click="createUsers" type="primary">确定</el-button>
             </div>
         </el-dialog>
+        <!-- 修改用户用户信息 -->
+        <el-dialog title="修改用户"
+                   :visible.sync="dialogUpdateVisible"
+                   :before-close="handleClose"
+                   close="reset">
+            <el-form ref="update" :model="updateUser" :rules="updateRules" label-width="100px" label-position="right">
+                <el-form-item label="姓名" prop="name">
+                    <el-input v-model="updateUser.name"></el-input>
+                </el-form-item>
+                <el-form-item label="电话" prop="phone">
+                    <el-input v-model="updateUser.phone"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="updateUser.email"></el-input>
+                </el-form-item>
+                <el-form-item label="是否启用">
+                    <el-switch v-model="updateUser.is_active"></el-switch>
+                </el-form-item>
+            </el-form>
+            <div slot="footer">
+                <el-button @click="dialogUpdateVisible = false">取消</el-button>
+                <el-button type="primary" @click="updateUsers">确认</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -113,6 +137,7 @@ export default {
         }
         return {
             users: [{
+                id: 1,
                 username: '111',
                 name: '222',
                 phone: '333',
@@ -121,7 +146,7 @@ export default {
                 is_active: 1
             },
             {
-                id: 111,
+                id: 2,
                 username: '222',
                 name: '222',
                 phone: '333',
@@ -130,6 +155,7 @@ export default {
                 is_active: 1
             },
             {
+                id: 3,
                 username: '333',
                 name: '222',
                 phone: '333',
@@ -142,6 +168,12 @@ export default {
                 username: '',
                 password: '',
                 checkPass: '',
+                phone: '',
+                email: '',
+                is_active: true
+            },
+            updateUser: {
+                name: '',
                 phone: '',
                 email: '',
                 is_active: true
@@ -193,10 +225,30 @@ export default {
                     message: '请输入中国国内的手机号'
                 }]
             },
+            updateRules: {
+                name: [{
+                    required: true,
+                    message: '请输入姓名',
+                    trigger: 'blur'
+                }, {
+                    min: 3,
+                    max: 15,
+                    message: '长度在 3 到 15 个字符'
+                }],
+                email: [{
+                    type: 'email',
+                    message: '邮箱格式不正确'
+                }],
+                phone: [{
+                    pattern: /^1[34578]\d{9}$/,
+                    message: '请输入中国国内的手机号码'
+                }]
+            },
             filter: {
                 sorts: ''
             },
             dialogCreateVisible: false,
+            dialogUpdateVisible: false,
             selected: [] //已选项
         }
     },
@@ -303,9 +355,32 @@ export default {
                 }
             })
         },
+        //更新用户
+        updateUsers() {
+            this.$refs.update.validate((valid) => {
+                if(valid) {
+                    this.users.forEach((element,i) => {
+                        if(element[id] == this.updateUsers.id) {
+                            this.users.splice(i,1,this.updateUser);
+                        }
+                    })
+                    this.$message.success('修改用户信息成功');
+                    this.dialogUpdateVisible = false;
+                    this.reset();
+                }else {
+                    console.log('error submit!');
+                    return false;
+                }
+            })
+        },
         //编辑当前用户信息
-        setCurrent(row, index) {
-             
+        setCurrent(user) {
+             this.currentId = user.id;
+             this.update.name = user.name;
+             this.update.phone = user.phone;
+             this.update.email = user.email;
+             this.update.is_active = user.is_active;
+             this.dialogUpdateVisible = true;
         }
     }
 }
