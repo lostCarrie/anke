@@ -63,7 +63,8 @@
         <el-dialog title="创建用户"
                    :visible.sync="dialogCreateVisible"
                    width="30%"
-                   :before-close="handleClose">
+                   :before-close="handleClose"
+                   @close="reset">
             <el-form label-position="right" ref="create" status-icon :rules="rules" :model="createUser" label-width="80px">
                 <el-form-item label="姓名" prop="name">
                     <el-input v-model="createUser.name"></el-input> 
@@ -120,6 +121,7 @@ export default {
                 is_active: 1
             },
             {
+                id: 111,
                 username: '222',
                 name: '222',
                 phone: '333',
@@ -270,11 +272,31 @@ export default {
                 done();
             }).catch(() => {});
         },
+        getuuid(){
+            var uid = [];
+            var hexDigits = "_";
+            for(var i = 0; i < 32; i++) {
+                uid[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1)
+            }
+            uid[6] = "4";
+            uid[15] = hexDigits.substr((uid[15] & 0x3) | 0x8, 1);
+            var uuid = uid.join("");
+            return uuid;
+        },
+        reset() {
+            this.$refs.create.resetFields();
+        },
         //创建新用户
         createUsers() {
             this.$refs.create.validate((valid) => {
                 if(valid) {
-                    alert('submit');
+                    this.createUser.id = this.getuuid();
+                    console.log(this.createUser)
+                    this.users.push(this.createUser)
+                    console.log(this.users)
+                    this.$message.success("添加用户成功！");
+                    this.dialogCreateVisible = false;
+                    this.reset();
                 }else {
                     console.log('error submit!');
                     return false;
