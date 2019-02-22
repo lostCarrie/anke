@@ -126,6 +126,7 @@
 </template>
 
 <script>
+import api from '../api/api.js'
 // 导出常量、函数、文件、模块，导入时使用import from即可
 export default {
     name: '',
@@ -261,11 +262,21 @@ export default {
             selected: [] //已选项
         }
     },
+    mounted:function() {
+        this.getUsers();
+    },
     methods:{
+        //获取用户数据
         getUsers(){
             this.loading = true;
-            this.users = this.users;
-            this.loading = false;
+            api._get().then(res => {
+                this.users = res.datas;
+                this.total_rows = res.datas.total_rows;
+                this.loading = false;
+                console.log(res)
+            }, err => {
+                console.log(err);
+            })
         },
         /*
         tableSortChange(val) {
