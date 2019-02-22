@@ -8,7 +8,7 @@
                     <!-- 操作 -->
                     <ul class="fr">
                         <li>
-                            <el-button type="primary" @click="dialogCreateVisible = true"><i class="el-icon-plus iconss"></i>添加用户</el-button>
+                            <el-button type="primary" @click="dialogCreateVisible = true"><i class="el-icon-plus icons"></i>添加用户</el-button>
                             <el-button type="danger" icon="el-icon-delete" :disabled="this.selected.length==0" @click="removeUsers()">删除用户</el-button>
                         </li>
                     </ul>
@@ -18,6 +18,8 @@
                               stripe
                               style="width:100%;margin-top:20px;"
                               height="443"
+                              v-loading="loading"
+                              element-loading-text="拼命加载中..."
                               :default-sort="{prop: ['username','create_time'],order: 'descending'}"
                               @selection-change="tableSelectionChange">
                         <el-table-column type="selection"
@@ -44,15 +46,16 @@
                         </el-table-column>
                         <el-table-column prop="is_active"
                                          label="状态"
-                                         width="75"
-                                         inline-template>
-                            <el-tag close-transition></el-tag>
+                                         width="75">
+                            <template slot-scope="scope">
+                                <el-tag :type="scope.row.is_active === true ? 'primary' : 'success'" close-transition>{{ scope.row.is_active}}</el-tag>
+                            </template>
                         </el-table-column>
                         <el-table-column label="操作"
                                          width="250">          
                             <template slot-scope="scope">
-                                <el-button type="danger" size="small" @click="removeUser(scope.row,scope.$index)">删除</el-button>
-                                <el-button type="success" size="small" @click="setCurrent(scope.row,scope.$index)">编辑</el-button>
+                                <el-button type="danger" size="small" @click="removeUser(scope.row)">删除</el-button>
+                                <el-button type="success" size="small" @click="setCurrent(scope.row)">编辑</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -63,9 +66,11 @@
         <el-dialog title="创建用户"
                    :visible.sync="dialogCreateVisible"
                    width="30%"
-                   :before-close="handleClose"
-                   @close="reset">
-            <el-form label-position="right" ref="create" status-icon :rules="rules" :model="createUser" label-width="80px">
+                   :before-close="handleClose">
+            <el-form ref="create" status-icon :rules="rules" :model="createUser" label-width="100px" label-position="right">
+                <el-form-item label="用户名" prop="username">
+                    <el-input v-model="createUser.username"></el-input>
+                </el-form-item>
                 <el-form-item label="姓名" prop="name">
                     <el-input v-model="createUser.name"></el-input> 
                 </el-form-item>
@@ -91,14 +96,13 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogCreateVisible=false">取消</el-button>
-                <el-button @click="createUsers" type="primary">确定</el-button>
+                <el-button :loading="createLoading" @click="createUsers" type="primary">确定</el-button>
             </div>
         </el-dialog>
         <!-- 修改用户用户信息 -->
         <el-dialog title="修改用户"
                    :visible.sync="dialogUpdateVisible"
-                   :before-close="handleClose"
-                   close="reset">
+                   :before-close="handleClose">
             <el-form ref="update" :model="updateUser" :rules="updateRules" label-width="100px" label-position="right">
                 <el-form-item label="姓名" prop="name">
                     <el-input v-model="updateUser.name"></el-input>
@@ -115,7 +119,7 @@
             </el-form>
             <div slot="footer">
                 <el-button @click="dialogUpdateVisible = false">取消</el-button>
-                <el-button type="primary" @click="updateUsers">确认</el-button>
+                <el-button :loading="updateLoading" type="primary" @click="updateUsers">确认</el-button>
             </div>
         </el-dialog>
     </div>
@@ -143,7 +147,7 @@ export default {
                 phone: '333',
                 email: '444',
                 create_time: '0821',
-                is_active: 1
+                is_active: true
             },
             {
                 id: 2,
@@ -152,7 +156,7 @@ export default {
                 phone: '333',
                 email: '444',
                 create_time: '1111',
-                is_active: 1
+                is_active: true
             },
             {
                 id: 3,
@@ -161,18 +165,20 @@ export default {
                 phone: '333',
                 email: '444',
                 create_time: '0324',
-                is_active: 1
+                is_active: false
             }],
             createUser: {
                 id: '',
                 username: '',
+                name: '',
                 password: '',
                 checkPass: '',
-                phone: '',
+                phone: '33333333',
                 email: '',
                 is_active: true
             },
             updateUser: {
+                id: '',
                 name: '',
                 phone: '',
                 email: '',
@@ -247,6 +253,9 @@ export default {
             filter: {
                 sorts: ''
             },
+            loading: false,
+            createLoading: false,
+            updateLoading: false,
             dialogCreateVisible: false,
             dialogUpdateVisible: false,
             selected: [] //已选项
@@ -254,7 +263,9 @@ export default {
     },
     methods:{
         getUsers(){
+            this.loading = true;
             this.users = this.users;
+            this.loading = false;
         },
         /*
         tableSortChange(val) {
@@ -274,7 +285,7 @@ export default {
             this.selected = val;
         },
         //删除单个用户
-        removeUser(row,index) {
+        removeUser(row) {
             this.$confirm('此操作将永久删除用户 ' + row.username + ',是否继续？', {
                 type: 'warning'
             }).then(() => {
@@ -335,22 +346,17 @@ export default {
             var uuid = uid.join("");
             return uuid;
         },
-        reset() {
-            this.$refs.create.resetFields();
-        },
         //创建新用户
         createUsers() {
             this.$refs.create.validate((valid) => {
                 if(valid) {
                     this.createUser.id = this.getuuid();
-                    console.log(this.createUser)
-                    this.users.push(this.createUser)
-                    console.log(this.users)
+                    this.createLoading = true;
+                    this.users.push(this.createUser);
                     this.$message.success("添加用户成功！");
                     this.dialogCreateVisible = false;
-                    this.reset();
+                    this.createLoading = false;
                 }else {
-                    console.log('error submit!');
                     return false;
                 }
             })
@@ -359,28 +365,31 @@ export default {
         updateUsers() {
             this.$refs.update.validate((valid) => {
                 if(valid) {
-                    this.users.forEach((element,i) => {
-                        if(element[id] == this.updateUsers.id) {
-                            this.users.splice(i,1,this.updateUser);
+                    this.updateLoading = true;
+                    this.users.forEach((element) => {
+                        if(element.id == this.updateUser.id) {
+                            element.name = this.updateUser.name;
+                            element.phone = this.updateUser.phone;
+                            element.email = this.updateUser.email;
+                            element.is_active = this.updateUser.is_active;
                         }
                     })
                     this.$message.success('修改用户信息成功');
+                    this.updateLoading = false;
                     this.dialogUpdateVisible = false;
-                    this.reset();
                 }else {
-                    console.log('error submit!');
                     return false;
                 }
             })
         },
         //编辑当前用户信息
         setCurrent(user) {
-             this.currentId = user.id;
-             this.update.name = user.name;
-             this.update.phone = user.phone;
-             this.update.email = user.email;
-             this.update.is_active = user.is_active;
-             this.dialogUpdateVisible = true;
+            this.updateUser.id = user.id;
+            this.updateUser.name = user.name;
+            this.updateUser.phone = user.phone;
+            this.updateUser.email = user.email;
+            this.updateUser.is_active = user.is_active;
+            this.dialogUpdateVisible = true;
         }
     }
 }
