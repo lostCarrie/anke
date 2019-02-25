@@ -1,0 +1,13 @@
+<template>
+    <el-container>
+        <el-header>河津市安可安全技术咨询服务有限公司</el-header>
+        <el-container>
+            <el-aside>
+            </el-aside>
+            <el-container>
+                <el-main></el-main>
+                <el-footer></el-footer>
+            </el-container>
+        </el-container>
+    </el-container>
+</template>

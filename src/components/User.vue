@@ -271,26 +271,12 @@ export default {
             this.loading = true;
             api._get().then(res => {
                 this.users = res.datas;
-                this.total_rows = res.datas.total_rows;
                 this.loading = false;
                 console.log(res)
             }, err => {
                 console.log(err);
             })
         },
-        /*
-        tableSortChange(val) {
-            if(val.prop != null) {
-                if(val.order === 'descending') {
-                    this.filter.sorts = '-' + val.prop;
-                } else {
-                    this.filter.sorts = '' + val.prop;
-                }
-            } else {
-                    this.filter.sorts = '';
-                }
-                this.getUsers();
-        },*/
         //记录已选用户
         tableSelectionChange(val) {
             this.selected = val;
@@ -300,14 +286,12 @@ export default {
             this.$confirm('此操作将永久删除用户 ' + row.username + ',是否继续？', {
                 type: 'warning'
             }).then(() => {
-                this.users.forEach((element, i) => {
-                    if(element.username == row.username) {
-                        this.users.splice(i,1)
-                    }
-                });
-                this.$message({
-                    type: 'success',
-                    message: '删除成功！'
+                api._remove(row).then(res => {
+                    this.$message.success('成功删除了用户' + row.username +'!');
+                    this.getUsers();
+                    console.log(row.id);
+                }).catch(res => {
+                    this.$message.error('删除失败！');
                 });
             }).catch(() => {
                 this.$message({
@@ -321,18 +305,24 @@ export default {
             this.$confirm('此操作将永久删除已选的'+ this.selected.length +'条数据，是否继续？','提示',{
                 type: 'warning'
             }).then(() => {
-                for(let i = 0; i < this.selected.length; i++) {
-                    let s = this.selected[i];
-                    this.users.forEach((element,index) => {
-                        if(s.username == element.username) {
-                            this.users.splice(index,1)
-                        }
-                    });
-                }
-                this.$message({
-                    type: 'success',
-                    message: '删除成功！'
-                })
+                api._removes().then(res => {
+                    this.$message.success('删除了'+this.selected.length+'个用户！');
+                    this.getUsers;
+                }).catch(res => {
+                    this.$message.error('删除失败');
+                });
+                // for(let i = 0; i < this.selected.length; i++) {
+                //     let s = this.selected[i];
+                //     this.users.forEach((element,index) => {
+                //         if(s.username == element.username) {
+                //             this.users.splice(index,1)
+                //         }
+                //     });
+                // }
+                // this.$message({
+                //     type: 'success',
+                //     message: '删除成功！'
+                // })
             }).catch(() => {
                 this.$message({
                     type: 'info',
@@ -357,16 +347,30 @@ export default {
             var uuid = uid.join("");
             return uuid;
         },
+        reset() {
+            this.$refs.create.resetFields();
+        },
         //创建新用户
         createUsers() {
             this.$refs.create.validate((valid) => {
                 if(valid) {
                     this.createUser.id = this.getuuid();
                     this.createLoading = true;
-                    this.users.push(this.createUser);
-                    this.$message.success("添加用户成功！");
-                    this.dialogCreateVisible = false;
-                    this.createLoading = false;
+                    api._post(this.createUser).then(res => {
+                        this.$message.success('创建用户成功！');
+                        this.dialogCreateVisible = false;
+                        this.createLoading = false;
+                        this.reset();
+                        this.getUsers();
+                    }).catch((res) => {
+                        var data = res;
+                        if(data instanceof Array) {
+                            this.$message.error(data[0]["message"]);
+                        }else if(data instanceof Object) {
+                            this.$message.error(data["message"]);
+                        }
+                        this.createLoading = false;
+                    })   
                 }else {
                     return false;
                 }
@@ -377,17 +381,20 @@ export default {
             this.$refs.update.validate((valid) => {
                 if(valid) {
                     this.updateLoading = true;
-                    this.users.forEach((element) => {
-                        if(element.id == this.updateUser.id) {
-                            element.name = this.updateUser.name;
-                            element.phone = this.updateUser.phone;
-                            element.email = this.updateUser.email;
-                            element.is_active = this.updateUser.is_active;
+                    api._update(this.currentId, this.updateUser).then(res => {
+                        this.$message.success('修改用户信息成功！');
+                        this.dialogUpdateVisible = false;
+                        this.updateLoading = false;
+                        this.getUsers();
+                    }).catch(res => {
+                        var data = res;
+                        if(data instanceof Array) {
+                            this.$message.error(data[0]["message"]);
+                        }else if(data instanceof Object) {
+                            this.$message.error(data["message"]);
                         }
+                        this.updateLoading = false;
                     })
-                    this.$message.success('修改用户信息成功');
-                    this.updateLoading = false;
-                    this.dialogUpdateVisible = false;
                 }else {
                     return false;
                 }
