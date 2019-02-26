@@ -5,7 +5,7 @@
             <el-col :span="24">
                 <div>
                     <el-table :data="detailData"
-                              show-summary="true">
+                              show-summary=true>
                         <el-table-column prop="username"
                                          label="姓名">
                         </el-table-column>
@@ -38,7 +38,7 @@
                         </el-table-column>
                         <el-table-column type="expand">
                             <template slot-scope="props">
-                                <el-table :data="projectData">
+                                <el-table :data="props.row.project">
                                     <el-table-column prop="projName"
                                                      label="项目名称">
                                     </el-table-column>
@@ -74,6 +74,18 @@ export default {
                 totalSlr: 739,
                 rwdPns: -9,
                 actualSlr: 730,
+                project: [{
+                    id: 1,
+                    projName: '每日优鲜',
+                    stageSlr: 0,
+                    finishSlr: 100
+                },
+                {
+                    id: 2,
+                    projName: '每日优鲜',
+                    stageSlr: 0,
+                    finishSlr: 100
+                }]
             },
             {
                 id: 2,
