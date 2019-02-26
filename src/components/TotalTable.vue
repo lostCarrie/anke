@@ -1,8 +1,8 @@
 <template>
     <div>
-        <h1>工资表</h1>
+        <h1>汇总工资表</h1>
         <el-row>
-            <el-col :span="22" offset="1">
+            <el-col :span="24">
                 <div>
                     <el-table :data="tableData"
                               height="250"
