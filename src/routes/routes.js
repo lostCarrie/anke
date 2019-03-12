@@ -2,6 +2,7 @@
 import Layout from '../layout/Layout.vue'
 import TotalTable from '../components/TotalTable.vue'
 import DetailTable from '../components/DetailTable.vue'
+import User from '../components/User.vue'
 //定义路由
 const routes = [
     {
@@ -21,6 +22,11 @@ const routes = [
                 path: 'DetailTable',
                 name: 'DetailTable',
                 component: DetailTable
+            },
+            {
+                path: 'User',
+                name: 'User',
+                component: User
             }
         ]
     }

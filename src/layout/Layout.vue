@@ -1,8 +1,8 @@
 <template>
-    <el-container style="border: 1px solid #eee">
+    <el-container>
         <el-header style="background-color: #B3C0D1;color:#333;line-height: 60px">津市安可安全技术咨询服务有限公司</el-header>
         <el-container>
-            <el-aside style="background-color: rgb(238, 241, 246)">
+            <el-aside>
                 <navbar></navbar>
             </el-aside>
             <el-container>
@@ -29,5 +29,13 @@
 <style>
 .el-main {
     padding: 0px;
+}
+.el-aside {
+    height: 100%;
+    width: 200px ! important;
+}
+.el-container,.el-main{
+    width: 100%;
+    height: 100%;
 }
 </style>

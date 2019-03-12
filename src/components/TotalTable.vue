@@ -5,7 +5,6 @@
             <el-col :span="24">
                 <div>
                     <el-table :data="tableData"
-                              height="250"
                               strip
                               style="width: 100%">
                         <el-table-column prop="id"

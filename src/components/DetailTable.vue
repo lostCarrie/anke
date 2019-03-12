@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="inner-ctt">
         <h1>详细工资单</h1>
         <el-row>
             <el-col :span="24">
@@ -110,3 +110,10 @@ export default {
     }
 }
 </script>
+
+<style>
+.inner-ctt {
+    width: 100%;
+    height: 100%;
+}
+</style>

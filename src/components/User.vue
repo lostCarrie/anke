@@ -1,9 +1,8 @@
 <template>
     <div>
-        <h1>Hello,Vue!简单的增删改查</h1>
         <!-- 基础表格 -->
         <el-row>
-            <el-col :span="22"  :offset="1">
+            <el-col :span="24">
                 <div style="margin-top:30px;">
                     <!-- 操作 -->
                     <ul class="fr">
@@ -268,7 +267,7 @@ export default {
     methods:{
         //获取用户数据
         getUsers(){
-            this.loading = true;
+            this.loading = false;
             api._get().then(res => {
                 this.users = res.datas;
                 this.loading = false;
