@@ -1,6 +1,9 @@
 <template>
     <el-menu default-openeds="[1,2]" 
-             router="true">
+             router="true"
+             text-color="#bfcbd9"
+             active-text-color="#409EFF"
+             background-color="rgb(48, 65, 86)">
         <el-submenu index="1">
             <template slot="title">
                 <i class="el-icon-menu"></i>
@@ -19,7 +22,7 @@
             </template>
             <el-menu-item-group>
                 <el-menu-item index="/User">员工信息管理</el-menu-item>
-                <el-menu-item index="3">业务信息管理</el-menu-item>
+                <el-menu-item index="/BusinessTable">业务信息管理</el-menu-item>
                 <el-menu-item index="4">服务费用汇总</el-menu-item>
             </el-menu-item-group>
         </el-submenu>

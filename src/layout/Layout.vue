@@ -1,16 +1,16 @@
 <template>
-    <el-container>
-        <el-header style="background-color: #B3C0D1;color:#333;line-height: 60px">津市安可安全技术咨询服务有限公司</el-header>
+    <el-container>    
+        <el-aside>
+            <navbar></navbar>
+        </el-aside>
         <el-container>
-            <el-aside>
-                <navbar></navbar>
-            </el-aside>
-            <el-container>
-                <el-main>
-                    <contents></contents>
-                </el-main>
-                <el-footer></el-footer>
-            </el-container>
+            <el-header>
+                <headbar></headbar>
+            </el-header>
+            <el-main>
+                <contents></contents>
+            </el-main>
+            <el-footer></el-footer>
         </el-container>
     </el-container>
 </template>
@@ -18,23 +18,30 @@
 <script>
     import Navbar from './Navbar.vue'
     import Contents from './Contents.vue'
+    import Headbar from './Headbar.vue'
     export default {
         components: {
             Navbar,
-            Contents
+            Contents,
+            Headbar
         }
     }
 </script>
 
 <style>
+.el-header {
+    padding: 10px;
+    border-bottom: 1px solid #CBCED0;
+    height: 50px ! important;
+}
 .el-main {
-    padding: 0px;
+    padding: 20px;
 }
 .el-aside {
     height: 100%;
     width: 200px ! important;
 }
-.el-container,.el-main{
+.el-container,.el-main,.el-header{
     width: 100%;
     height: 100%;
 }

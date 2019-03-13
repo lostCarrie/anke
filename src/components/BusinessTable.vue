@@ -1,6 +1,6 @@
 <template>
     <div class="inner-ctt">
-        <h1>详细工资单</h1>
+        <h1>安可业务信息</h1>
         <el-row>
             <el-col :span="24">
                 <div>
@@ -9,47 +9,37 @@
                               highlight-current-row
                               fit>
                         <el-table-column prop="username"
-                                         label="姓名">
+                                         label="日期">
                         </el-table-column>
                         <el-table-column prop="basicSlr"
-                                         label="基本工资">
+                                         label="公司">
                         </el-table-column>
                         <el-table-column prop="expertSlr"
-                                         label="专家工资">
+                                         label="项目类型">
                         </el-table-column>
                         <el-table-column prop="projectSlr"
-                                         label="项目工资">
+                                         label="事项">
                         </el-table-column>
                         <el-table-column prop="travelExp"
-                                         label="差旅费">
-                        </el-table-column>
-                        <el-table-column prop="subsidy"
-                                         label="补贴">
-                        </el-table-column>
-                        <el-table-column prop="other"
-                                         label="其他">
-                        </el-table-column>
-                        <el-table-column prop="totalSlr"
-                                         label="应领工资">
-                        </el-table-column>
-                        <el-table-column prop="rwdPns"
-                                         label="奖罚项">
-                            <template slot-scope="scope">
-                                <template v-if="scope.row.edit">
-                                    <el-input class="edit-input" size="small" v-model="scope.row.rwdPns"></el-input>
-                                </template>
-                                <span v-else>{{ scope.row.rwdPns }}</span>
-                            </template>
+                                         label="参与人员">
                         </el-table-column>
                         <el-table-column prop="actualSlr"
-                                         label="实领工资">
+                                         label="上会通过情况">
                         </el-table-column>
-                        <el-table-column label="操作" width="120px">
-                            <template slot-scope="scope">
-                                <el-button v-if="scope.row.edit" size="mini" icon="el-icon-circle-close-outline" type="warning" @click="cancelEdit(scope.row)"></el-button>
-                                <el-button v-if="scope.row.edit" size="mini" type="success"  icon="el-icon-circle-check-outline" @click="confirmEdit(scope.row)"></el-button>
-                                <el-button v-else type="primary" size="small" icon="el-icon-edit" @click="clickEdit(scope.row)">编辑</el-button>
-                            </template>
+                        <el-table-column prop="subsidy"
+                                         label="合同费用">
+                        </el-table-column>
+                        <el-table-column prop="other"
+                                         label="评审费用">
+                        </el-table-column>
+                        <el-table-column prop="totalSlr"
+                                         label="付款金额">
+                        </el-table-column>
+                        <el-table-column prop="totalSlr"
+                                         label="差额">
+                        </el-table-column>
+                        <el-table-column prop="totalSlr"
+                                         label="是否付清">
                         </el-table-column>
                         <el-table-column type="expand">
                             <template slot-scope="props">
@@ -57,13 +47,19 @@
                                           size="mini"
                                           border>
                                     <el-table-column prop="projName"
-                                                     label="项目名称">
+                                                     label="付款次数">
                                     </el-table-column>
                                     <el-table-column prop="stageSlr"
-                                                     label="阶段工资">
+                                                     label="预付金额">
                                     </el-table-column>
                                     <el-table-column prop="finishSlr"
-                                                     label="完成工资">
+                                                     label="付款金额">
+                                    </el-table-column>
+                                    <el-table-column prop="finishSlr"
+                                                     label="经办">
+                                    </el-table-column>
+                                    <el-table-column prop="finishSlr"
+                                                     label="付款方式">
                                     </el-table-column>
                                 </el-table>
                             </template>

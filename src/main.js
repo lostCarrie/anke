@@ -4,6 +4,7 @@ import App from './App.vue'
 //引入完整的Element模块
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import '../theme/index.css'
 //引入路由
 import VueRouter from 'vue-router'
 //引入路由配置
