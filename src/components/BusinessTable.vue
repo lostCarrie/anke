@@ -1,11 +1,25 @@
 <template>
     <div class="inner-ctt">
-        <h1>安可业务信息</h1>
+        <el-row>
+            <el-col :span="8">
+                <table-nav></table-nav>
+            </el-col>
+            <el-col :span="8">
+                <el-input v-model="search"
+                  class="filter-item"
+                  placeholder="输入关键字"></el-input>
+            </el-col>
+            <el-col :span="8">
+                <el-button icon="el-icon-edit" type="primary" @click="enen">新增</el-button>
+                <el-button icon="el-icon-delete" type="primary">删除</el-button>
+                <el-button icon="el-icon-download" type="primary" @click="handleDownload">下载</el-button>    
+            </el-col>
+        </el-row>
         <el-row>
             <el-col :span="24">
                 <div>
-                    <el-table :data="detailData"
-                              show-summary=true
+                    <el-table :data="detailData.filter(data => !search || data.username.includes(search))"
+                              show-summary
                               highlight-current-row
                               fit>
                         <el-table-column prop="username"
@@ -24,7 +38,7 @@
                                          label="参与人员">
                         </el-table-column>
                         <el-table-column prop="actualSlr"
-                                         label="上会通过情况">
+                                         label="上会情况">
                         </el-table-column>
                         <el-table-column prop="subsidy"
                                          label="合同费用">
@@ -40,6 +54,13 @@
                         </el-table-column>
                         <el-table-column prop="totalSlr"
                                          label="是否付清">
+                        </el-table-column>
+                         <el-table-column label="操作" width="120px">
+                            <template slot-scope="scope">
+                                <el-button v-if="scope.row.edit" size="mini" icon="el-icon-circle-close-outline" type="warning" @click="cancelEdit(scope.row)"></el-button>
+                                <el-button v-if="scope.row.edit" size="mini" type="success"  icon="el-icon-circle-check-outline" @click="confirmEdit(scope.row)"></el-button>
+                                <el-button v-else type="primary" size="small" icon="el-icon-edit" @click="clickEdit(scope.row)">编辑</el-button>
+                            </template>
                         </el-table-column>
                         <el-table-column type="expand">
                             <template slot-scope="props">
@@ -65,6 +86,14 @@
                             </template>
                         </el-table-column>
                     </el-table>
+                    <el-pagination @size-change="handleSizeChange"
+                                   @current-change="handleCurrentChange"
+                                   :current-page="currentPage"
+                                   :page-sizes="[20,50,100]"
+                                   :page-size="20"
+                                   layout="total, sizes, prev, pager, next, jumper"
+                                   :total="total">
+                    </el-pagination>
                 </div>
             </el-col>
         </el-row>
@@ -72,16 +101,27 @@
 </template>
 
 <script>
+import TableNav from '../miniComponents/TableNav.vue'
+
 export default {
+    components: {
+        TableNav
+    },
     data() {
         return {
-            detailData: []
+            detailData: [],
+            search: '',
+            currentPage: 1,
+            total: 0
         }
     },
     created() {
         this.getDetail()
     },
     methods: {
+        enen() {
+            console.log('enen');
+        },
         getDetail(){
             const items = [{
                 id: 1,
@@ -132,6 +172,7 @@ export default {
                 v.originalRwdPns = v.rwdPns
                 return v
             })
+            this.total = this.detailData.length;
         },
         clickEdit(row) {
             row.edit=!row.edit;
@@ -151,6 +192,34 @@ export default {
                 message: '修改成功！',
                 type: 'success'
             })
+        },
+        handleSizeChange(val) {
+            console.log(`每页 ${val}条`);
+        },
+        handleCurrentChange(val) {
+            console.log(`当前页： ${val}`);
+        },
+        handleDownload() {
+            console.log('coming');
+            import('../vendor/Export2Excel').then(excel => {
+                const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
+                const filterVal = ['username', 'title', 'type', 'importance', 'status']
+                const data = this.formatJson(filterVal, this.detailData)
+                excel.export_json_to_excel({
+                header: tHeader,
+                data,
+                filename: 'table-list'
+                })
+            })
+        },
+        formatJson(filterVal, jsonData) {
+            return jsonData.map(v => filterVal.map(j => {
+                if (j === 'timestamp') {
+                
+                } else {
+                return v[j]
+                }
+            }))
         }
     }
 }
@@ -164,5 +233,7 @@ export default {
 .edit-input {
     padding-right: 5px;
 }
-
+.filter-item {
+    width: 90%;
+  }
 </style>

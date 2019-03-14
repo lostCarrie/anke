@@ -1,6 +1,6 @@
 <template>
-    <el-menu default-openeds="[1,2]" 
-             router="true"
+    <el-menu default-openeds=[1,2]
+             router
              text-color="#bfcbd9"
              active-text-color="#409EFF"
              background-color="rgb(48, 65, 86)">
@@ -33,7 +33,15 @@
         </el-menu-item>-->
     </el-menu>
 </template>
-
+<script>
+export default {
+    date() {
+        return {
+            
+        }
+    }
+}
+</script>
 <style>
 .el-menu {
     height: auto;

@@ -5,7 +5,7 @@
             <el-col :span="24">
                 <div>
                     <el-table :data="detailData"
-                              show-summary=true
+                              show-summary
                               highlight-current-row
                               fit>
                         <el-table-column prop="username"
