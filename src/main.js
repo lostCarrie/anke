@@ -10,6 +10,7 @@ import VueRouter from 'vue-router'
 //引入路由配置
 import routes from './routes/routes.js'
 
+
 Vue.use(ElementUI)
 Vue.use(VueRouter)
 

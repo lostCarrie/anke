@@ -1,13 +1,14 @@
 import axios from 'axios'
 
 axios.defaults.timeout = 5000
+axios.defaults.baseURL = 'http://127.0.0.1:5000'
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.params = {}
 
 //封装获取数据
 export const oGet = (url, params) => {
     return new Promise((resolve, reject) => {
-        axio.get(url, params).then(res => {
+        axios.get(url, params).then(res => {
             resolve(res.data)
         }, err => {
             reject(err)
@@ -53,19 +54,20 @@ export default {
     //此处是接口
     //获取用户数据
     _get() {
-        return oGet('http://dddd');
+        return oGet('/api/user');
     },
     //新建用户
     _post(params) {
-        return oPost('http://192....', params)
+        console.log(params);
+        return oPost('/api/user1', params)
     },
     //更新用户
     _update (param, params) {
-        return ontimeupdate('http://192....'+'?ids='+param,params)
+        return oUpdate('http://192....'+'?ids='+param,params)
     },
     _remove(user){
         var userid = user.id;
-        return onpointermove('http://....'+ userid);
+        return oRemove('http://....'+ userid);
     },
     _removes(){
         var ids = [];

@@ -1,16 +1,24 @@
 <template>
     <div>
+        <el-row>
+            <el-col :span="8">
+                <table-nav></table-nav>
+            </el-col>
+            <el-col :span="8">
+                <el-input v-model="search"
+                  class="filter-item"
+                  placeholder="输入关键字"></el-input>
+            </el-col>
+            <el-col :span="8">
+                <el-button icon="el-icon-edit" type="primary" @click="dialogCreateVisible = true">新增</el-button>
+                <el-button icon="el-icon-delete" type="primary" :disabled="this.selected.length==0" @click="removeUsers()">删除</el-button>
+                <el-button icon="el-icon-download" type="primary" @click="handleDownload">下载</el-button>    
+            </el-col>
+        </el-row>
         <!-- 基础表格 -->
         <el-row>
             <el-col :span="24">
                 <div style="margin-top:30px;">
-                    <!-- 操作 -->
-                    <ul class="fr">
-                        <li>
-                            <el-button type="primary" @click="dialogCreateVisible = true"><i class="el-icon-plus icons"></i>添加用户</el-button>
-                            <el-button type="danger" icon="el-icon-delete" :disabled="this.selected.length==0" @click="removeUsers()">删除用户</el-button>
-                        </li>
-                    </ul>
                     <!-- 用户列表 -->
                     <el-col :span="24" style="height:20px;"></el-col>
                     <el-table :data="users"
@@ -126,9 +134,12 @@
 
 <script>
 import api from '../api/api.js'
+import TableNav from '../miniComponents/TableNav.vue'
 // 导出常量、函数、文件、模块，导入时使用import from即可
 export default {
-    name: '',
+    components: {
+        TableNav
+    },
     data() {
         var validatePass = (rule, value, callback) => {
             if(value === '') {
@@ -140,33 +151,7 @@ export default {
             }
         }
         return {
-            users: [{
-                id: 1,
-                username: '111',
-                name: '222',
-                phone: '333',
-                email: '444',
-                create_time: '0821',
-                is_active: true
-            },
-            {
-                id: 2,
-                username: '222',
-                name: '222',
-                phone: '333',
-                email: '444',
-                create_time: '1111',
-                is_active: true
-            },
-            {
-                id: 3,
-                username: '333',
-                name: '222',
-                phone: '333',
-                email: '444',
-                create_time: '0324',
-                is_active: false
-            }],
+            users: [],
             createUser: {
                 id: '',
                 username: '',
@@ -269,9 +254,8 @@ export default {
         getUsers(){
             this.loading = false;
             api._get().then(res => {
-                this.users = res.datas;
+                this.users = res;
                 this.loading = false;
-                console.log(res)
             }, err => {
                 console.log(err);
             })
@@ -407,6 +391,28 @@ export default {
             this.updateUser.email = user.email;
             this.updateUser.is_active = user.is_active;
             this.dialogUpdateVisible = true;
+        },
+        handleDownload() {
+            console.log('coming');
+            import('../vendor/Export2Excel').then(excel => {
+                const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
+                const filterVal = ['username', 'title', 'type', 'importance', 'status']
+                const data = this.formatJson(filterVal, this.detailData)
+                excel.export_json_to_excel({
+                header: tHeader,
+                data,
+                filename: 'table-list'
+                })
+            })
+        },
+        formatJson(filterVal, jsonData) {
+            return jsonData.map(v => filterVal.map(j => {
+                if (j === 'timestamp') {
+                
+                } else {
+                return v[j]
+                }
+            }))
         }
     }
 }
