@@ -18,7 +18,7 @@
         <!-- 基础表格 -->
         <el-row>
             <el-col :span="24">
-                <div style="margin-top:30px;">
+                <div>
                     <!-- 用户列表 -->
                     <el-col :span="24" style="height:20px;"></el-col>
                     <el-table :data="users"
@@ -27,35 +27,32 @@
                               height="443"
                               v-loading="loading"
                               element-loading-text="拼命加载中..."
-                              :default-sort="{prop: ['username','create_time'],order: 'descending'}"
+                              :default-sort="{prop: ['user_id','create_time'],order: 'descending'}"
                               @selection-change="tableSelectionChange">
                         <el-table-column type="selection"
                                          width="60">
                         </el-table-column>
-                        <el-table-column prop="username"
-                                         label="用户名"
-                                         sortable
-                                         width="100">
+                        <el-table-column prop="user_id"
+                                         label="工号"
+                                         sortable>
                         </el-table-column>
-                        <el-table-column prop="name"
-                                         label="姓名"
-                                         width="80">
+                        <el-table-column prop="user_name"
+                                         label="用户名">
                         </el-table-column>
-                        <el-table-column prop="phone"
-                                         label="手机">
+                        <el-table-column prop="user_display_name"
+                                         label="姓名">
                         </el-table-column>
-                        <el-table-column prop="email"
-                                         label="邮箱">
+                        <el-table-column prop="telephone_num"
+                                         label="手机号">
                         </el-table-column>
                         <el-table-column prop="create_time"
                                          label="注册日期"
                                          sortable>
                         </el-table-column>
-                        <el-table-column prop="is_active"
-                                         label="状态"
-                                         width="75">
+                        <el-table-column prop="status"
+                                         label="在职状态">
                             <template slot-scope="scope">
-                                <el-tag :type="scope.row.is_active === true ? 'primary' : 'success'" close-transition>{{ scope.row.is_active}}</el-tag>
+                                <el-tag :type="scope.row.status == 0 ? 'primary' : 'success'" close-transition>{{ scope.row.status == 1 ? "在职" : "离职"}}</el-tag>
                             </template>
                         </el-table-column>
                         <el-table-column label="操作"
@@ -75,30 +72,17 @@
                    width="30%"
                    :before-close="handleClose">
             <el-form ref="create" status-icon :rules="rules" :model="createUser" label-width="100px" label-position="right">
-                <el-form-item label="用户名" prop="username">
-                    <el-input v-model="createUser.username"></el-input>
+                <el-form-item label="用户名" prop="user_name">
+                    <el-input v-model="createUser.user_name"></el-input>
                 </el-form-item>
-                <el-form-item label="姓名" prop="name">
-                    <el-input v-model="createUser.name"></el-input> 
+                <el-form-item label="姓名" prop="user_display_name">
+                    <el-input v-model="createUser.user_display_name"></el-input> 
                 </el-form-item>
-                <el-form-item label="密码" prop="password">
-                    <el-input v-model="createUser.password"
-                              type="password">
-                    </el-input>
+                <el-form-item label="手机号" prop="telephone_num">
+                    <el-input v-model="createUser.telephone_num"></el-input>
                 </el-form-item>
-                <el-form-item label="确认密码" prop="checkPass">
-                    <el-input v-model="createUser.checkPass"
-                              type="password">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="电话" prop="phone">
-                    <el-input v-model="createUser.phone"></el-input>
-                </el-form-item>
-                <el-form-item label="邮箱" prop="email">
-                    <el-input v-model="createUser.email"></el-input>
-                </el-form-item>
-                <el-form-item label="是否启用">
-                    <el-switch v-model="createUser.is_active"></el-switch>
+                <el-form-item label="是否在职">
+                    <el-switch v-model="createUser.status"></el-switch>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -111,17 +95,14 @@
                    :visible.sync="dialogUpdateVisible"
                    :before-close="handleClose">
             <el-form ref="update" :model="updateUser" :rules="updateRules" label-width="100px" label-position="right">
-                <el-form-item label="姓名" prop="name">
-                    <el-input v-model="updateUser.name"></el-input>
+                <el-form-item label="姓名" prop="user_display_name">
+                    <el-input v-model="updateUser.user_display_name"></el-input>
                 </el-form-item>
-                <el-form-item label="电话" prop="phone">
-                    <el-input v-model="updateUser.phone"></el-input>
+                <el-form-item label="手机号" prop="telephone_num">
+                    <el-input v-model="updateUser.telephone_num"></el-input>
                 </el-form-item>
-                <el-form-item label="邮箱" prop="email">
-                    <el-input v-model="updateUser.email"></el-input>
-                </el-form-item>
-                <el-form-item label="是否启用">
-                    <el-switch v-model="updateUser.is_active"></el-switch>
+                <el-form-item label="是否在职">
+                    <el-switch v-model="updateUser.status"></el-switch>
                 </el-form-item>
             </el-form>
             <div slot="footer">
@@ -141,103 +122,67 @@ export default {
         TableNav
     },
     data() {
-        var validatePass = (rule, value, callback) => {
-            if(value === '') {
-                callback(new Error('请再次输入密码'));
-            }else if(value !== this.createUser.password) {
-                callback(new Error('两次输入密码不一致！'));
-            }else {
-                callback();
-            }
-        }
         return {
             users: [],
             createUser: {
-                id: '',
-                username: '',
-                name: '',
-                password: '',
-                checkPass: '',
-                phone: '33333333',
-                email: '',
-                is_active: true
+                user_name: '',
+                user_display_name: '',
+                telephone_num: '',
+                status: true
             },
             updateUser: {
-                id: '',
-                name: '',
-                phone: '',
-                email: '',
-                is_active: true
+                user_id: '',
+                user_name: '',
+                user_display_name: '',
+                telephone_num: '',
+                status: true
             },
             rules: {
-                name: [{
-                    required: true,
-                    message: '请输入姓名',
-                    trigger: 'blur'
-                }, {
-                    min: 3,
-                    max: 15,
-                    message: '长度在3到15个字符'
-                }],
-                username: [{
+                user_name: [{
                     required: true,
                     message: '请输入用户名',
+                    trigger: 'blur'
+                }, {
+                    min: 2,
+                    max: 15,
+                    message: '长度在2到15个字符'
+                }, {
+                    pattern: /^[A-Za-z0-9]+$/,
+                    message: '用户名只能为字母和数字'
+                }],
+                user_display_name: [{
+                    required: true,
+                    message: '请输入姓名',
                     trigger: 'blur'
                 }, {
                     min: 3,
                     max: 25,
                     message: '长度在3到25个字符'
-                }, {
-                    pattern: /^[A-Za-z0-9]+$/,
-                    message: '用户名只能为字母和数字'
                 }],
-                password: [{
-                    required: true,
-                    message: '请输入密码',
-                    trigger: 'blur'
-                }, {
-                    min: 6,
-                    max: 25,
-                    message: '长度在6到25个字符'
-                }],
-                checkPass: [{
-                    require: true,
-                    message: '请再次输入密码',
-                    trigger: 'blur'
-                }, {
-                    validator: validatePass
-                }],
-                email: [{
-                    type: 'email',
-                    message: '邮件格式不正确'
-                }],
-                phone: [{
+                telephone_num: [{
                     pattern: /^1[34578]\d{9}$/,
                     message: '请输入中国国内的手机号'
                 }]
             },
             updateRules: {
-                name: [{
+                user_display_name: [{
                     required: true,
                     message: '请输入姓名',
                     trigger: 'blur'
                 }, {
                     min: 3,
-                    max: 15,
-                    message: '长度在 3 到 15 个字符'
+                    max: 25,
+                    message: '长度在3到25个字符'
                 }],
-                email: [{
-                    type: 'email',
-                    message: '邮箱格式不正确'
-                }],
-                phone: [{
+                telephone_num: [{
                     pattern: /^1[34578]\d{9}$/,
-                    message: '请输入中国国内的手机号码'
+                    message: '请输入中国国内的手机号'
                 }]
             },
             filter: {
                 sorts: ''
             },
+            search:'',
             loading: false,
             createLoading: false,
             updateLoading: false,
@@ -254,7 +199,13 @@ export default {
         getUsers(){
             this.loading = false;
             api._get().then(res => {
-                this.users = res;
+                if (res.success){
+                    this.users = res.data;
+                } else {
+                    this.$message.error(res.message);
+                }
+                this.users = res.data;
+                console.log(this.users);
                 this.loading = false;
             }, err => {
                 console.log(err);
@@ -266,13 +217,12 @@ export default {
         },
         //删除单个用户
         removeUser(row) {
-            this.$confirm('此操作将永久删除用户 ' + row.username + ',是否继续？', {
+            this.$confirm('此操作将永久删除用户 ' + row.user_display_name + ',是否继续？', {
                 type: 'warning'
             }).then(() => {
                 api._remove(row).then(res => {
-                    this.$message.success('成功删除了用户' + row.username +'!');
+                    this.$message.success('成功删除了用户' + row.user_display_name +'!');
                     this.getUsers();
-                    console.log(row.id);
                 }).catch(res => {
                     this.$message.error('删除失败！');
                 });
@@ -285,32 +235,20 @@ export default {
         },
         //删除多个用户
         removeUsers(){
-            this.$confirm('此操作将永久删除已选的'+ this.selected.length +'条数据，是否继续？','提示',{
+            this.$confirm('此操作将永久删除已选的'+ this.selected.length +'条数据，是否继续？',{
                 type: 'warning'
             }).then(() => {
-                api._removes().then(res => {
+                api._removes(this.selected).then(res => {
                     this.$message.success('删除了'+this.selected.length+'个用户！');
-                    this.getUsers;
+                    this.getUsers();
                 }).catch(res => {
                     this.$message.error('删除失败');
                 });
-                // for(let i = 0; i < this.selected.length; i++) {
-                //     let s = this.selected[i];
-                //     this.users.forEach((element,index) => {
-                //         if(s.username == element.username) {
-                //             this.users.splice(index,1)
-                //         }
-                //     });
-                // }
-                // this.$message({
-                //     type: 'success',
-                //     message: '删除成功！'
-                // })
             }).catch(() => {
                 this.$message({
                     type: 'info',
                     message: '已取消删除！'
-                })
+                });
             });
         },
         //手动关闭提示
@@ -319,17 +257,6 @@ export default {
                 done();
             }).catch(() => {});
         },
-        getuuid(){
-            var uid = [];
-            var hexDigits = "_";
-            for(var i = 0; i < 32; i++) {
-                uid[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1)
-            }
-            uid[6] = "4";
-            uid[15] = hexDigits.substr((uid[15] & 0x3) | 0x8, 1);
-            var uuid = uid.join("");
-            return uuid;
-        },
         reset() {
             this.$refs.create.resetFields();
         },
@@ -337,7 +264,6 @@ export default {
         createUsers() {
             this.$refs.create.validate((valid) => {
                 if(valid) {
-                    this.createUser.id = this.getuuid();
                     this.createLoading = true;
                     api._post(this.createUser).then(res => {
                         this.$message.success('创建用户成功！');
@@ -364,7 +290,7 @@ export default {
             this.$refs.update.validate((valid) => {
                 if(valid) {
                     this.updateLoading = true;
-                    api._update(this.currentId, this.updateUser).then(res => {
+                    api._update(this.updateUser.user_id, this.updateUser).then(res => {
                         this.$message.success('修改用户信息成功！');
                         this.dialogUpdateVisible = false;
                         this.updateLoading = false;
@@ -385,41 +311,30 @@ export default {
         },
         //编辑当前用户信息
         setCurrent(user) {
-            this.updateUser.id = user.id;
-            this.updateUser.name = user.name;
-            this.updateUser.phone = user.phone;
-            this.updateUser.email = user.email;
-            this.updateUser.is_active = user.is_active;
+            this.updateUser.user_id = user.user_id;
+            this.updateUser.user_name = user.user_name;
+            this.updateUser.user_display_name = user.user_display_name;
+            this.updateUser.telephone_num = user.telephone_num;
+            if(user.status){
+                this.updateUser.status = true;
+            }else {
+                this.updateUser.status = false;
+            } 
             this.dialogUpdateVisible = true;
         },
         handleDownload() {
             console.log('coming');
             import('../vendor/Export2Excel').then(excel => {
-                const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-                const filterVal = ['username', 'title', 'type', 'importance', 'status']
-                const data = this.formatJson(filterVal, this.detailData)
+                const tHeader = ['工号', '用户名', '姓名', '手机号', '是否在职']
+                const filterVal = ['user_id', 'user_name', 'user_display_name', 'telephone_num', 'status']
+                const data = this.formatJson(filterVal, this.users)
                 excel.export_json_to_excel({
                 header: tHeader,
                 data,
                 filename: 'table-list'
                 })
             })
-        },
-        formatJson(filterVal, jsonData) {
-            return jsonData.map(v => filterVal.map(j => {
-                if (j === 'timestamp') {
-                
-                } else {
-                return v[j]
-                }
-            }))
         }
     }
 }
 </script>
-<style>
-ul li{
-    list-style: none
-}
-.fr{float:right}
-</style>
