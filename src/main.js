@@ -7,12 +7,18 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '../theme/index.css'
 //引入路由
 import VueRouter from 'vue-router'
-//引入路由配置
-import routes from './routes/routes.js'
 
+
+import routes from './routes/routes.js'//引入路由配置
+//import * as filters from './filters' //引入过滤器
 
 Vue.use(ElementUI)
 Vue.use(VueRouter)
+
+// 注册过滤器
+// Object.keys(filters).forEach(key => {
+//   Vue.filter(key, filters[key])
+// })
 
 Vue.config.productionTip = false
 

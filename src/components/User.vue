@@ -1,13 +1,8 @@
 <template>
     <div>
         <el-row>
-            <el-col :span="8">
+            <el-col :span="16">
                 <table-nav></table-nav>
-            </el-col>
-            <el-col :span="8">
-                <el-input v-model="search"
-                  class="filter-item"
-                  placeholder="输入关键字"></el-input>
             </el-col>
             <el-col :span="8">
                 <el-button icon="el-icon-edit" type="primary" @click="dialogCreateVisible = true">新增</el-button>
@@ -48,6 +43,9 @@
                         <el-table-column prop="create_time"
                                          label="注册日期"
                                          sortable>
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.create_time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+                            </template>
                         </el-table-column>
                         <el-table-column prop="status"
                                          label="在职状态">
@@ -116,6 +114,7 @@
 <script>
 import api from '../api/api.js'
 import TableNav from '../miniComponents/TableNav.vue'
+import { parseTime } from '../utils'
 // 导出常量、函数、文件、模块，导入时使用import from即可
 export default {
     components: {
@@ -182,6 +181,14 @@ export default {
             filter: {
                 sorts: ''
             },
+            searchOptions: [
+                {key: 'user_id',label: '工号'},
+                {key: 'user_name',label: '用户名'},
+                {key: 'user_display_name',label: '姓名'},
+                {key: 'telephone_num',label: '手机号'},
+                {key: 'status',label: '在职状态'},
+            ],
+            searchOption:'',
             search:'',
             loading: false,
             createLoading: false,
@@ -210,10 +217,6 @@ export default {
             }, err => {
                 console.log(err);
             })
-        },
-        //记录已选用户
-        tableSelectionChange(val) {
-            this.selected = val;
         },
         //删除单个用户
         removeUser(row) {
@@ -250,15 +253,6 @@ export default {
                     message: '已取消删除！'
                 });
             });
-        },
-        //手动关闭提示
-        handleClose(done) {
-            this.$confirm('确认关闭？').then(() => {
-                done();
-            }).catch(() => {});
-        },
-        reset() {
-            this.$refs.create.resetFields();
         },
         //创建新用户
         createUsers() {
@@ -322,18 +316,48 @@ export default {
             } 
             this.dialogUpdateVisible = true;
         },
+        //下载按钮
         handleDownload() {
             console.log('coming');
             import('../vendor/Export2Excel').then(excel => {
-                const tHeader = ['工号', '用户名', '姓名', '手机号', '是否在职']
-                const filterVal = ['user_id', 'user_name', 'user_display_name', 'telephone_num', 'status']
+                const tHeader = ['工号', '用户名', '姓名', '手机号','注册日期', '在职状态']
+                const filterVal = ['user_id', 'user_name', 'user_display_name', 'telephone_num', 'create_time', 'status']
                 const data = this.formatJson(filterVal, this.users)
                 excel.export_json_to_excel({
-                header: tHeader,
-                data,
-                filename: 'table-list'
+                    header: tHeader,
+                    data,
+                    filename: 'table-list'
                 })
             })
+        },
+        formatJson(filterVal, jsonData) {
+            return jsonData.map(v => filterVal.map(j => {
+            if (j === 'create_time') {
+                return parseTime(v[j])
+            } else {
+                return v[j]
+            }
+            }))
+        },
+
+
+        //手动关闭提示
+        handleClose(done) {
+            this.$confirm('确认关闭？').then(() => {
+                done();
+            }).catch(() => {});
+        },
+        reset() {
+            this.$refs.create.resetFields();
+        },
+        //记录已选用户
+        tableSelectionChange(val) {
+            this.selected = val;
+        },
+        handleFilter() {
+            console.log(this.search)
+            console.log(this.searchOption)
+
         }
     }
 }
