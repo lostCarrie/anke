@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="sponge">
         <el-row>
             <el-col :span="16">
                 <table-nav></table-nav>
@@ -11,19 +11,18 @@
             </el-col>
         </el-row>
         <!-- 基础表格 -->
-        <el-row>
-            <el-col :span="24">
-                <div>
+        <el-row style="width:100%;height:90%">
+            <el-col :span="24" class="sponge">
+                <div class="sponge">
                     <!-- 用户列表 -->
-                    <el-col :span="24" style="height:20px;"></el-col>
                     <el-table :data="users"
                               stripe
                               style="width:100%;margin-top:20px;"
-                              height="443"
                               v-loading="loading"
                               element-loading-text="拼命加载中..."
                               :default-sort="{prop: ['user_id','create_time'],order: 'descending'}"
-                              @selection-change="tableSelectionChange">
+                              @selection-change="tableSelectionChange"
+                              class="main-table">
                         <el-table-column type="selection"
                                          width="60">
                         </el-table-column>
@@ -61,6 +60,12 @@
                             </template>
                         </el-table-column>
                     </el-table>
+                    <pagination v-show="total>0" 
+                                :total="total"
+                                :page.sync="listQuery.page"
+                                :p-size.sync="listQuery.pSize"
+                                @pagination="getUsers"/>
+                                
                 </div>
             </el-col>
         </el-row>
@@ -114,11 +119,13 @@
 <script>
 import api from '../api/api.js'
 import TableNav from '../miniComponents/TableNav.vue'
-import { parseTime } from '../utils'
+import Pagination from '../miniComponents/Pagination.vue'
+import { parseTime } from '../filters'
 // 导出常量、函数、文件、模块，导入时使用import from即可
 export default {
     components: {
-        TableNav
+        TableNav,
+        Pagination
     },
     data() {
         return {
@@ -181,38 +188,37 @@ export default {
             filter: {
                 sorts: ''
             },
-            searchOptions: [
-                {key: 'user_id',label: '工号'},
-                {key: 'user_name',label: '用户名'},
-                {key: 'user_display_name',label: '姓名'},
-                {key: 'telephone_num',label: '手机号'},
-                {key: 'status',label: '在职状态'},
-            ],
-            searchOption:'',
-            search:'',
             loading: false,
             createLoading: false,
             updateLoading: false,
             dialogCreateVisible: false,
             dialogUpdateVisible: false,
-            selected: [] //已选项
+            selected: [], //已选项
+            total: 0,//pagination
+            listQuery: {     
+                page: 1,
+                pSize: 2,
+                times: undefined,
+                title: undefined,
+                contents: undefined
+            }
+            
         }
     },
-    mounted:function() {
+    created:function() {
         this.getUsers();
     },
     methods:{
         //获取用户数据
         getUsers(){
             this.loading = false;
-            api._get().then(res => {
+            api._get(this.listQuery).then(res => {
                 if (res.success){
                     this.users = res.data;
+                    this.total = res.total;
                 } else {
                     this.$message.error(res.message);
                 }
-                this.users = res.data;
-                console.log(this.users);
                 this.loading = false;
             }, err => {
                 console.log(err);
@@ -318,7 +324,6 @@ export default {
         },
         //下载按钮
         handleDownload() {
-            console.log('coming');
             import('../vendor/Export2Excel').then(excel => {
                 const tHeader = ['工号', '用户名', '姓名', '手机号','注册日期', '在职状态']
                 const filterVal = ['user_id', 'user_name', 'user_display_name', 'telephone_num', 'create_time', 'status']
@@ -353,12 +358,18 @@ export default {
         //记录已选用户
         tableSelectionChange(val) {
             this.selected = val;
-        },
-        handleFilter() {
-            console.log(this.search)
-            console.log(this.searchOption)
-
         }
     }
 }
 </script>
+<style>
+.sponge{
+    width:100%;
+    height: 100%;
+}
+.main-table{
+    width:100%;
+    min-height:90%;
+    height:auto;
+}
+</style>

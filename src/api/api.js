@@ -2,14 +2,22 @@ import axios from 'axios'
 import qs from 'qs'
 
 axios.defaults.timeout = 5000
-axios.defaults.baseURL = 'http://192.168.199.149:3000'
+//axios.defaults.baseURL = 'http://192.168.199.149:3000'
+axios.defaults.baseURL = 'http://127.0.0.1:5000'
+
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.params = {}
 
 //封装获取数据
 export const oGet = (url, params) => {
     return new Promise((resolve, reject) => {
-        axios.get(url, params).then(res => {
+        axios.get(url, {
+            params: params,
+            paramsSerializer: params => {
+                return qs.stringify(params, { indices: false })
+              }
+        }).then(res => {
+            console.log(params)
             resolve(res.data)
         }, err => {
             reject(err)
@@ -54,8 +62,8 @@ export const oRemove = (url, params) => {
 export default {
     //此处是接口
     //获取用户数据
-    _get() {
-        return oGet('/users');
+    _get(params) {
+        return oGet('/users', params);
     },
     //新建用户
     _post(params) {
@@ -63,7 +71,6 @@ export default {
     },
     //更新用户
     _update (userid, params) {
-        console.log(params)
         return oUpdate('/users/'+userid, params)
     },
     _remove(user){

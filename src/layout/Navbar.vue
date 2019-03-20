@@ -1,5 +1,5 @@
 <template>
-    <el-menu default-openeds=[1,2]
+    <el-menu :default-openeds=[1,2]
              router
              text-color="#bfcbd9"
              active-text-color="#409EFF"

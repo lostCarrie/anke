@@ -1,16 +1,17 @@
 <template>
     <div>
-        <el-date-picker v-model="firstDate"
+        <el-date-picker 
                 type="daterange"
                 unlink-panels
                 range-separator="至"
                 start-placeholde="开始日期"
                 end-placeholde="结束日期"
-                format="yyyy 年 MM 月 dd 日"
-                value-format="yyyy-MM-dd"
+                :format="format"
+                :value-format="valueFormat"
                 :picker-options="pickerOptions"
-                class="filter-item"
-                style="width:30%">
+                style="width:35%"
+                :value.sync="value"
+                @change="handleChange">
         </el-date-picker>
         <el-select v-model="searchOption" placeholder="请选择" style="width:25%;margin-left:2%">
             <el-option v-for="item in searchOptions"
@@ -26,9 +27,43 @@
 
 <script>
 export default {
+    name: 'TableNav',
+    props: {
+        format: {
+            type: String,
+            default: "yyyy/M/d"
+        },
+        valueFormat: {
+            type: String,
+            default: "yyyy-MM-dd"
+        },
+        chooseDate: {
+            type: String,
+            default: ""
+        }
+    },
+    computed: {
+        value: {
+            get() {
+                return this.chooseDate
+            },
+            set(val) {
+                this.$emit('update:chooseDate', val)
+            }
+        }
+    },
     data() {
         return {
-            firstDate: '',
+            searchOptions: [
+                {key: 'user_id',label: '工号'},
+                {key: 'user_name',label: '用户名'},
+                {key: 'user_display_name',label: '姓名'},
+                {key: 'telephone_num',label: '手机号'},
+                {key: 'status',label: '在职状态'},
+            ],
+            searchOption:'',
+            search:'',
+            chooseDate: '',
             pickerOptions: {
                 shortcuts: [{
                     text: '最近一个月',
@@ -56,7 +91,13 @@ export default {
                 }]
             }
         }
+    },
+    methods: {
+        handleChange() {
+            console.log(this.chooseDate)
+        }
     }
+
 }
 
 </script>
