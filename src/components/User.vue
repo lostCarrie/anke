@@ -2,7 +2,10 @@
     <div class="sponge">
         <el-row>
             <el-col :span="16">
-                <table-nav></table-nav>
+                <table-nav :c-date.sync="listQuery.cDate"
+                           :s-option.sync="listQuery.sOption"
+                           :s-input.sync="listQuery.sInput"
+                           @table-nav="getUsers"></table-nav>
             </el-col>
             <el-col :span="8">
                 <el-button icon="el-icon-edit" type="primary" @click="dialogCreateVisible = true">新增</el-button>
@@ -197,10 +200,10 @@ export default {
             total: 0,//pagination
             listQuery: {     
                 page: 1,
-                pSize: 2,
-                times: undefined,
-                title: undefined,
-                contents: undefined
+                pSize: 20,
+                cDate: [],
+                sOption: "",
+                sInput: ""
             }
             
         }
@@ -213,6 +216,7 @@ export default {
         getUsers(){
             this.loading = false;
             api._get(this.listQuery).then(res => {
+                console.log(this.listQuery)
                 if (res.success){
                     this.users = res.data;
                     this.total = res.total;

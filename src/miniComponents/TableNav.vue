@@ -1,6 +1,7 @@
 <template>
     <div>
         <el-date-picker 
+                :value.sync="chooseDate"
                 type="daterange"
                 unlink-panels
                 range-separator="至"
@@ -10,17 +11,19 @@
                 :value-format="valueFormat"
                 :picker-options="pickerOptions"
                 style="width:35%"
-                :value.sync="value"
-                @change="handleChange">
+                @change="pickerChange">
         </el-date-picker>
-        <el-select v-model="searchOption" placeholder="请选择" style="width:25%;margin-left:2%">
-            <el-option v-for="item in searchOptions"
+        <el-select :value.sync="selectOption" placeholder="请选择" style="width:25%;margin-left:2%">
+            <el-option v-for="item in selectOptions"
                         :key="item.key"
                         :label="item.label"
                         :value="item.key">
             </el-option>
         </el-select>
-        <el-input v-model="search" class="filter-item" placeholder="请输入搜索关键字" style="width:25%;margin-left:2%;"></el-input>
+        <el-input :value.sync="searchInput" 
+                  placeholder="请输入搜索关键字" 
+                  style="width:25%;margin-left:2%;"
+                  @change="inputChange"></el-input>
         <el-button icon="el-icon-search" type="primary" style="margin-left:2%;" @click="handleFilter"></el-button>
     </div>
 </template>
@@ -37,39 +40,62 @@ export default {
             type: String,
             default: "yyyy-MM-dd"
         },
-        chooseDate: {
+        cDate: {
+            type: Array,
+            default() {
+                return []
+            }
+        },
+        sOption: {
             type: String,
             default: ""
+        },
+        sInput: {
+            type: String
         }
     },
     computed: {
-        value: {
+        chooseDate: {
             get() {
-                return this.chooseDate
+                console.log('get'+this.cDate)
+                return this.cDate
             },
             set(val) {
-                this.$emit('update:chooseDate', val)
+                this.$emit('update:cDate', val)
+            }
+        },
+        selectOption: {
+            get() {
+                return this.sOption
+            },
+            set(val) {
+                this.$emit('update:sOption', val)
+            }
+        },
+        searchInput: {
+            get() {
+                return this.sInput
+            },
+            set(val) {
+                this.$emit('update:sInput', val)
             }
         }
     },
     data() {
         return {
-            searchOptions: [
+            selectOptions: [
                 {key: 'user_id',label: '工号'},
                 {key: 'user_name',label: '用户名'},
                 {key: 'user_display_name',label: '姓名'},
                 {key: 'telephone_num',label: '手机号'},
                 {key: 'status',label: '在职状态'},
             ],
-            searchOption:'',
-            search:'',
-            chooseDate: '',
             pickerOptions: {
                 shortcuts: [{
                     text: '最近一个月',
                     onClick(picker) {
-                        const end = new Date();
-                        const start = new Date();
+                        var end = new Date();
+                        var start = new Date();
                         start.setDate(1);
                         picker.$emit('pick',[start,end]);
                     }
@@ -77,15 +103,15 @@ export default {
                 {
                     text: '上一个月',
                     onClick(picker) {
-                        const d = new Date();
+                        var d = new Date();
                         
                         if(d.getMonth == 0){
                             d.setFullYear(d.getFullYear() -1,0);
                         } else{
                             d.setMonth(d.getMonth());
                         }
-                        const end = new Date(d.setDate(0));
-                        const start = new Date(d.setDate(1));
+                        var end = new Date(d.setDate(0));
+                        var start = new Date(d.setDate(1));
                         picker.$emit('pick',[start,end]);
                     }
                 }]
@@ -93,8 +119,21 @@ export default {
         }
     },
     methods: {
-        handleChange() {
-            console.log(this.chooseDate)
+        pickerChange(val) {
+            this.$emit('table-nav', {
+                cDate: val
+            })
+        },
+        selectChange(val) {
+            this.$emit('table-nav', {
+                sOption: val
+            })
+        },
+        inputChange(val) {
+            console.log('inputchange:'+val)
+            this.$emit('table-nav', {
+                sInput: val
+            })
         }
     }
 
