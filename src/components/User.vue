@@ -4,6 +4,7 @@
             <el-col :span="16">
                 <table-nav :c-date.sync="listQuery.cDate"
                            :s-option.sync="listQuery.sOption"
+                           :select-options="selectOptions"
                            :s-input.sync="listQuery.sInput"
                            @table-nav="getUsers"></table-nav>
             </el-col>
@@ -133,6 +134,13 @@ export default {
     data() {
         return {
             users: [],
+            selectOptions: [
+                {key: 'user_id',label: '工号'},
+                {key: 'user_name',label: '用户名'},
+                {key: 'user_display_name',label: '姓名'},
+                {key: 'telephone_num',label: '手机号'},
+                {key: 'status',label: '在职状态'},
+            ],
             createUser: {
                 user_name: '',
                 user_display_name: '',
@@ -213,13 +221,24 @@ export default {
     },
     methods:{
         //获取用户数据
-        getUsers(){
+        getUsers(list){
+            var data
             this.loading = false;
-            api._get(this.listQuery).then(res => {
-                console.log(this.listQuery)
+            var params
+            if(arguments.length > 0){
+                params = this.listQuery
+            }else{
+                params = list
+            }
+            console.log(params)
+            api._get(params).then(res => {
                 if (res.success){
-                    this.users = res.data;
-                    this.total = res.total;
+                    if(arguments.length === 0){
+                        data = res.data;
+                    }else{
+                        this.users = res.data;
+                        this.total = res.total;
+                    }                                
                 } else {
                     this.$message.error(res.message);
                 }
@@ -227,6 +246,7 @@ export default {
             }, err => {
                 console.log(err);
             })
+            return data
         },
         //删除单个用户
         removeUser(row) {
@@ -329,9 +349,13 @@ export default {
         //下载按钮
         handleDownload() {
             import('../vendor/Export2Excel').then(excel => {
-                const tHeader = ['工号', '用户名', '姓名', '手机号','注册日期', '在职状态']
-                const filterVal = ['user_id', 'user_name', 'user_display_name', 'telephone_num', 'create_time', 'status']
-                const data = this.formatJson(filterVal, this.users)
+                var tHeader = ['注册日期']
+                var filterVal = ['create_time']
+                for (var i in this.selectOptions) {
+                    tHeader.push(this.selectOptions[i].label)
+                    filterVal.push(this.selectOptions[i].key)
+                }
+                const data = this.formatJson(filterVal, this.getUsers())
                 excel.export_json_to_excel({
                     header: tHeader,
                     data,

@@ -1,28 +1,32 @@
 <template>
     <div>
-        <el-date-picker 
-                :value.sync="chooseDate"
-                type="daterange"
-                unlink-panels
-                range-separator="至"
-                start-placeholde="开始日期"
-                end-placeholde="结束日期"
-                :format="format"
-                :value-format="valueFormat"
-                :picker-options="pickerOptions"
-                style="width:35%"
-                @change="pickerChange">
+        <el-date-picker v-model="chooseDate"
+                        type="daterange"
+                        unlink-panels
+                        range-separator="至"
+                        start-placeholde="开始日期"
+                        end-placeholde="结束日期"
+                        :format="format"
+                        :value-format="valueFormat"
+                        :picker-options="pickerOptions"
+                        style="width:35%"
+                        @change="pickerChange">
         </el-date-picker>
-        <el-select :value.sync="selectOption" placeholder="请选择" style="width:25%;margin-left:2%">
+        <el-select v-model="selectOption" 
+                   placeholder="请选择" 
+                   clearable
+                   style="width:25%;margin-left:2%"
+                   @change="selectChange">
             <el-option v-for="item in selectOptions"
                         :key="item.key"
                         :label="item.label"
                         :value="item.key">
             </el-option>
         </el-select>
-        <el-input :value.sync="searchInput" 
+        <el-input v-model="searchInput" 
                   placeholder="请输入搜索关键字" 
                   style="width:25%;margin-left:2%;"
+                  clearable
                   @change="inputChange"></el-input>
         <el-button icon="el-icon-search" type="primary" style="margin-left:2%;" @click="handleFilter"></el-button>
     </div>
@@ -41,14 +45,13 @@ export default {
             default: "yyyy-MM-dd"
         },
         cDate: {
-            type: Array,
-            default() {
-                return []
-            }
+            type: Array
         },
         sOption: {
-            type: String,
-            default: ""
+            type: String
+        },
+        selectOptions: {
+            type: Array
         },
         sInput: {
             type: String
@@ -83,13 +86,6 @@ export default {
     },
     data() {
         return {
-            selectOptions: [
-                {key: 'user_id',label: '工号'},
-                {key: 'user_name',label: '用户名'},
-                {key: 'user_display_name',label: '姓名'},
-                {key: 'telephone_num',label: '手机号'},
-                {key: 'status',label: '在职状态'},
-            ],
             pickerOptions: {
                 shortcuts: [{
                     text: '最近一个月',
@@ -125,6 +121,7 @@ export default {
             })
         },
         selectChange(val) {
+            console.log('selectChange:'+val)
             this.$emit('table-nav', {
                 sOption: val
             })

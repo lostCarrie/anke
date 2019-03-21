@@ -2,8 +2,8 @@ import axios from 'axios'
 import qs from 'qs'
 
 axios.defaults.timeout = 5000
-axios.defaults.baseURL = 'http://192.168.199.149:3000'
-//axios.defaults.baseURL = 'http://127.0.0.1:5000'
+//axios.defaults.baseURL = 'http://192.168.199.149:3000'
+axios.defaults.baseURL = 'http://127.0.0.1:5000'
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.params = {}
