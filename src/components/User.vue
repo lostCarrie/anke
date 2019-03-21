@@ -199,6 +199,7 @@ export default {
             filter: {
                 sorts: ''
             },
+            downdata:'',
             loading: false,
             createLoading: false,
             updateLoading: false,
@@ -209,20 +210,19 @@ export default {
             listQuery: {     
                 page: 1,
                 pSize: 20,
-                cDate: [],
-                sOption: "",
-                sInput: ""
+                cDate: undefined,
+                sOption: undefined,
+                sInput: undefined
             }
             
         }
     },
     created:function() {
-        this.getUsers();
+        this.getUsers(this.listQuery);
     },
     methods:{
         //获取用户数据
         getUsers(list){
-            var data
             this.loading = false;
             var params
             if(arguments.length > 0){
@@ -230,11 +230,10 @@ export default {
             }else{
                 params = list
             }
-            console.log(params)
             api._get(params).then(res => {
                 if (res.success){
                     if(arguments.length === 0){
-                        data = res.data;
+                        this.downdata = res.data;
                     }else{
                         this.users = res.data;
                         this.total = res.total;
@@ -245,8 +244,7 @@ export default {
                 this.loading = false;
             }, err => {
                 console.log(err);
-            })
-            return data
+            }) 
         },
         //删除单个用户
         removeUser(row) {
@@ -255,7 +253,7 @@ export default {
             }).then(() => {
                 api._remove(row).then(res => {
                     this.$message.success('成功删除了用户' + row.user_display_name +'!');
-                    this.getUsers();
+                    this.getUsers(this.listQuery);
                 }).catch(res => {
                     this.$message.error('删除失败！');
                 });
@@ -273,7 +271,7 @@ export default {
             }).then(() => {
                 api._removes(this.selected).then(res => {
                     this.$message.success('删除了'+this.selected.length+'个用户！');
-                    this.getUsers();
+                    this.getUsers(this.listQuery);
                 }).catch(res => {
                     this.$message.error('删除失败');
                 });
@@ -294,7 +292,7 @@ export default {
                         this.dialogCreateVisible = false;
                         this.createLoading = false;
                         this.reset();
-                        this.getUsers();
+                        this.getUsers(this.listQuery);
                     }).catch((res) => {
                         var data = res;
                         if(data instanceof Array) {
@@ -318,7 +316,7 @@ export default {
                         this.$message.success('修改用户信息成功！');
                         this.dialogUpdateVisible = false;
                         this.updateLoading = false;
-                        this.getUsers();
+                        this.getUsers(this.listQuery);
                     }).catch(res => {
                         var data = res;
                         if(data instanceof Array) {
@@ -355,7 +353,8 @@ export default {
                     tHeader.push(this.selectOptions[i].label)
                     filterVal.push(this.selectOptions[i].key)
                 }
-                const data = this.formatJson(filterVal, this.getUsers())
+                this.getUsers();
+                const data = this.formatJson(filterVal, this.downdata)
                 excel.export_json_to_excel({
                     header: tHeader,
                     data,
