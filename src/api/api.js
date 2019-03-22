@@ -85,5 +85,8 @@ export default {
         ids = ids.join(",")
         console.log(ids)
         return oRemove('/users/'+ids)
+    },
+    _getR(params) {
+        return oGet('/', params);
     }
 }

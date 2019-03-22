@@ -23,7 +23,7 @@
             <el-menu-item-group>
                 <el-menu-item index="/User">员工信息管理</el-menu-item>
                 <el-menu-item index="/BusinessTable">业务信息管理</el-menu-item>
-                <el-menu-item index="4">服务费用汇总</el-menu-item>
+                <el-menu-item index="/ReceiptTable">服务费用汇总</el-menu-item>
             </el-menu-item-group>
         </el-submenu>
         <!--
