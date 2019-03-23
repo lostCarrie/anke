@@ -4,6 +4,7 @@ import TotalTable from '../components/TotalTable.vue'
 import DetailTable from '../components/DetailTable.vue'
 import User from '../components/User.vue'
 import BusinessTable from '../components/BusinessTable.vue'
+import ReceiptTable from '../components/ReceiptTable.vue'
 //定义路由
 const routes = [
     {
@@ -33,6 +34,11 @@ const routes = [
                 path: 'BusinessTable',
                 name: 'BusinessTable',
                 component: BusinessTable
+            },
+            {
+                path: 'ReceiptTable',
+                name: 'ReceiptTable',
+                component: ReceiptTable
             }
         ]
     }

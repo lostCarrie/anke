@@ -11,7 +11,7 @@ import VueRouter from 'vue-router'
 
 import routes from './routes/routes.js'//引入路由配置
 import * as filters from './filters' //引入过滤器
-
+import './style/index.scss'
 Vue.use(ElementUI)
 Vue.use(VueRouter)
 
