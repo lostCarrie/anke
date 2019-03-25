@@ -32,6 +32,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column prop="twotwo" label="公司" sortable/>
+                    <el-table-column prop="threethreel" label="项目类型"/>
                     <el-table-column prop="threethree" label="事项"/>
                     <el-table-column prop="fourfour" label="数额"/>
                     <el-table-column prop="fivefive" label="经办人"/>
@@ -54,7 +55,6 @@
         <!-- 创建收款条目 -->
         <el-dialog title="创建收款明细"
                    :visible.sync="dialogCreateVisible"
-                   width="30%"
                    :before-close="handleClose">
             <el-form ref="create" 
                      status-icon 
@@ -62,11 +62,128 @@
                      :model="createReceipt"
                      label-width="100px"
                      label-position="right">
-
+                <el-form-item label="日期" prop="oneone">
+                    <el-date-picker v-model="createReceipt.oneone" type="date"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="公司" prop="twotwo">
+                    <el-input v-model="createReceipt.twotwo"></el-input>
+                </el-form-item>
+                <el-form-item label="项目类型" prop="threethreel">
+                    <el-select v-model="createReceipt.threethreel" placeholder="请选择项目类型">
+                        <el-option v-for="item in typeOptions"
+                                   :key="item.key"
+                                   :label="item.label"
+                                   :value="item.key">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="事项" prop="threethree">
+                    <el-select v-model="createReceipt.threethree" multiple placeholder="请选择事项">
+                        <el-option v-for="item in professionOptions"
+                                   :key="item.key"
+                                   :label="item.label"
+                                   :value="item.key">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="数额" prop="fourfour">
+                    <el-input v-model="createReceipt.fourfour"></el-input>
+                </el-form-item>
+                <el-form-item label="经办人" prop="fivefive">
+                    <el-select v-model="createReceipt.fivefive" multiple placeholder="请选择事项">
+                        <el-option v-for="item in fivefiveOptions"
+                                   :key="item.key"
+                                   :label="item.label"
+                                   :value="item.key">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="接收人" prop="sixsix">
+                    <el-select v-model="createReceipt.sixsix" multiple placeholder="请选择事项">
+                        <el-option v-for="item in sixsixOptions"
+                                   :key="item.key"
+                                   :label="item.label"
+                                   :value="item.key">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="账户" prop="sevenseven">
+                    <el-select v-model="createReceipt.sevenseven" multiple placeholder="请选择事项">
+                        <el-option v-for="item in sevensevenOptions"
+                                   :key="item.key"
+                                   :label="item.label"
+                                   :value="item.key">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
             </el-form>
             <div>
                 <el-button @click="dialogCreateVisible = false">取消</el-button>
                 <el-button @click="createCurrent" type="primary" :loading="createLoading">确定</el-button>
+            </div>
+        </el-dialog>
+        <el-dialog title="修改业务信息"
+                   :visible.sync="dialogUpdateVisible"
+                   :before-close="handleClose">
+            <el-form ref="update" status-icon :rules="rules" :model="updateReceipt" label-width="100px" label-position="left">
+                <el-form-item label="日期" prop="oneone">
+                    <el-date-picker v-model="createReceipt.oneone" type="date"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="公司" prop="twotwo">
+                    <el-input v-model="createReceipt.twotwo"></el-input>
+                </el-form-item>
+                <el-form-item label="项目类型" prop="threethreel">
+                    <el-select v-model="createReceipt.threethreel" placeholder="请选择项目类型">
+                        <el-option v-for="item in typeOptions"
+                                   :key="item.key"
+                                   :label="item.label"
+                                   :value="item.key">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="事项" prop="threethree">
+                    <el-select v-model="createReceipt.threethree" multiple placeholder="请选择事项">
+                        <el-option v-for="item in professionOptions"
+                                   :key="item.key"
+                                   :label="item.label"
+                                   :value="item.key">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="数额" prop="fourfour">
+                    <el-input v-model="createReceipt.fourfour"></el-input>
+                </el-form-item>
+                <el-form-item label="经办人" prop="fivefive">
+                    <el-select v-model="createReceipt.fivefive" multiple placeholder="请选择事项">
+                        <el-option v-for="item in fivefiveOptions"
+                                   :key="item.key"
+                                   :label="item.label"
+                                   :value="item.key">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="接收人" prop="sixsix">
+                    <el-select v-model="createReceipt.sixsix" multiple placeholder="请选择事项">
+                        <el-option v-for="item in sixsixOptions"
+                                   :key="item.key"
+                                   :label="item.label"
+                                   :value="item.key">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="账户" prop="sevenseven">
+                    <el-select v-model="createReceipt.sevenseven" multiple placeholder="请选择事项">
+                        <el-option v-for="item in sevensevenOptions"
+                                   :key="item.key"
+                                   :label="item.label"
+                                   :value="item.key">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogUpdateVisible = false">取消</el-button>
+                <el-button :loading="updateLoading" @click="updateCurrent" type="primary">确定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -93,6 +210,7 @@ export default{
             },
             selectOptions: [
                 {key: 'twotwo', label:'公司'},
+                {key: 'threethreel', label:'项目类型'},
                 {key: 'threethree', label:'事项'},
                 {key: 'fourfour', label:'数额'},
                 {key: 'fivefive', label:'经办人'},
@@ -108,15 +226,76 @@ export default{
                 sixsix: 'Carrie',
                 sevenseven: '广发'                
             }],
-            downdata: undefined,
+            downdata: [],
             total: 1,
             loading: false,
             dialogCreateVisible: false,
-            createLoading: false
+            createLoading: false,
+            updateLoading: false,
+            dialogUpdateVisible: false,
+            createReceipt: {
+                id: '',
+                twotwo: '',
+                threethreel: '',
+                threethree: '',
+                fourfour: 0,
+                fivefive: '',
+                sixsix: '',
+                sevenseven: '' 
+            },
+            updateReceipt: {
+                id: '',
+                twotwo: '',
+                threethreel: '',
+                threethree: '',
+                fourfour: 0,
+                fivefive: '',
+                sixsix: '',
+                sevenseven: '' 
+            },
+            rules: {
+                oneone: [{
+                    required: true,
+                    trigger: 'blur'
+                }],
+                twotwo: [{
+                    required: true,
+                    message: '请输入汇款方名称',
+                    trigger: 'blur'
+                }, {
+                    pattern: /^[\u0391-\uFFE5A-Za-z]+$/,
+                    message: '公司只能为汉字或英文'
+                }],
+                threethreel: [{
+                    required: true,
+                    trigger: 'blur'
+                }],
+                threethree: [{
+                    required: true,
+                    trigger: 'blur'
+                }],
+                fourfour: [{
+                    pattern: /^\d+[\.]{0,1}\d*$/,
+                    message: '合同费用只能输入数字'
+                }],
+                fivefive: [{
+                    required: true,
+                    trigger: 'blur'
+                }],
+                sixsix: [{
+                    required: true,
+                    trigger: 'blur'
+                }],
+                sevenseven: [{
+                    required: true,
+                    trigger: 'blur'
+                }]
+            }
         }
     },
     created:function() {
         this.getReceipts(this.listQuery);
+        this.getOptions();
     },
     methods: {
         //获取用户数据
@@ -144,18 +323,158 @@ export default{
                 console.log(err);
             }) 
         },
+        getOptions() {
+            var option = {}
+            api._get().then(res => {
+                if(res.success){
+                    for(let i in res.data) {
+                        option.key = res.data.id;
+                        option.label = res.data.employees;
+                    }
+                    this.fivefiveOptions = this.fivefiveOptions.push(option);
+                } else {
+                    this.message.error(res.message);
+                }
+            }, err => {
+                console.log(err);
+            });
+            api._getT().then(res => {
+                if(res.success){
+                    for(let i in res.data) {
+                        option.key = res.data.id;
+                        option.label = res.data.type_name;
+                    }
+                    this.typeOptions = this.typeOptions.push(option);
+                } else {
+                    this.message.error(res.message);
+                }
+            }, err => {
+                console.log(err);
+            });
+            api._getP().then(res => {
+                if(res.success){
+                    for(let i in res.data) {
+                        option.key = res.data.id;
+                        option.label = res.data.profession_name;
+                    }
+                    this.professionOptions = this.professionOptions.push(option);
+                } else {
+                    this.message.error(res.message);
+                }
+            }, err => {
+                console.log(err);
+            })
+        },
         removeCurrent(row) {
-
+            this.$confirm('此操作将永久删除 ' + row.twotwo + '公司此项记录,是否继续？', {
+                type: 'warning'
+            }).then(() => {
+                api._removeB(row).then(res => {
+                    this.$message.success('成功删除了' + row.twotwo +'公司此项业务!');
+                    this.getBusiness(this.listQuery);
+                }).catch(res => {
+                    this.$message.error('删除失败！');
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除！'
+                });
+            });
         },
         setCurrent(row) {
-
+            this.updateReceipt.id = row.id;
+            this.updateReceipt.oneone = row.oneone;
+            this.updateReceipt.twotwo = row.twotwo;
+            this.updateReceipt.threethreel = row.threethreel;
+            this.updateReceipt.threethree = row.threethree;
+            this.updateReceipt.fourfour = row.fourfour;
+            this.updateReceipt.fivefive = row.fivefive;
+            this.updateReceipt.sixsix = row.sixsix;
+            this.updateReceipt.sevenseven = row.sevenseven;
+            this.dialogUpdateVisible = true;
+        },
+        updateCurrent() {
+            this.$refs.update.validate((valid) => {
+                if(valid) {
+                    this.updateLoading = true;
+                    api._update(this.updateReceipt.id, this.updateReceipt).then(res => {
+                        this.$message.success('修改用户信息成功！');
+                        this.dialogUpdateVisible = false;
+                        this.updateLoading = false;
+                        this.getBusiness(this.listQuery);
+                    }).catch(res => {
+                        var data = res;
+                        if(data instanceof Array) {
+                            this.$message.error(data[0]["message"]);
+                        }else if(data instanceof Object) {
+                            this.$message.error(data["message"]);
+                        }
+                        this.updateLoading = false;
+                    })
+                }else {
+                    return false;
+                }
+            })
         },
         createCurrent() {
-
+            this.$refs.create.validate((valid) => {
+                if(valid) {
+                    this.createLoading = true;
+                    api._post(this.createReceipt).then(res => {
+                        this.$message.success('创建记录成功！');
+                        this.dialogCreateVisible = false;
+                        this.createLoading = false;
+                        this.reset();
+                        this.getReceipts(this.listQuery);
+                    }).catch((res) => {
+                        var data = res;
+                        if(data instanceof Array) {
+                            this.$message.error(data[0]["message"]);
+                        }else if(data instanceof Object) {
+                            this.$message.error(data["message"]);
+                        }
+                        this.createLoading = false;
+                    })   
+                }else {
+                    return false;
+                }
+            })
         },
-        handleClose() {
-
-        }
+        reset() {
+            this.$refs.create.resetFields();
+        },
+        handleClose(done) {
+            this.$confirm('确认关闭？').then(() => {
+                done();
+            }).catch(() => {});
+        },
+        handleDownload() {
+            this.getBusiness();
+            import('../vendor/Export2Excel').then(excel => {
+                var tHeader = ['日期']
+                var filterVal = ['oneone']
+                for (var i in this.selectOptions) {
+                    tHeader.push(this.selectOptions[i].label)
+                    filterVal.push(this.selectOptions[i].key)
+                }
+                const data = this.formatJson(filterVal, this.downdata)
+                excel.export_json_to_excel({
+                    header: tHeader,
+                    data,
+                    filename: 'table-list'
+                })
+            })
+        },
+        formatJson(filterVal, jsonData) {
+            return jsonData.map(v => filterVal.map(j => {
+            if (j === 'oneone') {
+                return parseTime(v[j])
+            } else {
+                return v[j]
+            }
+            }))
+        },
     }
 }
 </script>

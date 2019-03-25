@@ -64,6 +64,18 @@ export default {
     _get(params) {
         return oGet('/users', params);
     },
+    _getR(params) {
+        return oGet('/', params);
+    },
+    _getB(params) {
+        return oGet('/', params);
+    },
+    _getT(params) {
+        return oGet('/', params);
+    },
+    _getP(params) {
+        return oGet('/', params);
+    },
     //新建用户
     _post(params) {
         return oPost('/users', params)
@@ -72,9 +84,8 @@ export default {
     _update (userid, params) {
         return oUpdate('/users/'+userid, params)
     },
-    _remove(user){
-        var userid = user.user_id;
-        return oRemove('/users/'+ userid);
+    _remove(params){
+        return oRemove('/users/'+ params.user_id);
     },
     _removes(users){
         var ids = [];
@@ -82,13 +93,9 @@ export default {
             ids.push(user.user_id);
         });
         ids = ids.join(",")
-        console.log(ids)
         return oRemove('/users/'+ids)
     },
-    _getR(params) {
-        return oGet('/', params);
+    _remove(params){
+        return oRemove('/'+ params.id);
     },
-    _getB(params) {
-        return oGet('/', params)
-    }
 }

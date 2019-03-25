@@ -22,7 +22,6 @@
                           show-summary
                           v-loading="loading"
                           element-loading-text="拼命加载中..."
-                          style="width:100%;margin-top:20px;"
                           :default-sort="{prop:['oneone','twotwo'],order: 'descending'}"
                           class="main-table">
                     <el-table-column prop="start_time"
@@ -61,7 +60,8 @@
                     <el-table-column prop="if_paid"
                                         label="是否付清">
                     </el-table-column>
-                    <el-table-column label="操作" width="250">
+                    <el-table-column label="操作"
+                                     width="250">          
                         <template slot-scope="scope">
                             <el-button type="danger" size="small" @click="removeCurrent(scope.row)">删除</el-button>
                             <el-button type="success" size="small" @click="setCurrent(scope.row)">编辑</el-button>
@@ -148,21 +148,68 @@
                 <el-form-item label="评审费用" prop="review_fee">
                     <el-input v-model="createBusiness.review_fee"></el-input>
                 </el-form-item>
-                <el-form-item label="付款金额" prop="pure_income">
-                    <el-input v-model="createBusiness.pure_income"></el-input>
-                </el-form-item>
-                <el-form-item label="差额" prop="balance">
-                    <el-input v-model="createBusiness.balance"></el-input>
-                </el-form-item>
-                <el-form-item label="是否付清">
-                    <el-input v-model="createBusiness.if_paid"></el-input>
-                </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogCreateVisible=false">取消</el-button>
                 <el-button :loading="createLoading" @click="createCurrent" type="primary">确定</el-button>
             </div>
         </el-dialog>
+        <el-dialog title="修改业务信息"
+                   :visible.sync="dialogUpdateVisible"
+                   :before-close="handleClose">
+            <el-form ref="update" status-icon :rules="rules" :model="updateBusiness" label-width="100px" label-position="left">
+                <el-form-item label="开始日期" prop="start_time">
+                    <el-date-picker v-model="updateBusiness.start_time" type="date"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="结束日期" prop="end_time">
+                    <el-date-picker v-model="updateBusiness.end_time" type="date"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="公司" prop="second_party">
+                    <el-input v-model="updateBusiness.second_party"></el-input>
+                </el-form-item>
+                <el-form-item label="项目类型" prop="type_name">
+                    <el-select v-model="updateBusiness.type_name" placeholder="请选择项目类型">
+                        <el-option v-for="item in typeOptions"
+                                   :key="item.key"
+                                   :label="item.label"
+                                   :value="item.key">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="事项" prop="profession_name">
+                    <el-select v-model="updateBusiness.profession_name" multiple placeholder="请选择事项">
+                        <el-option v-for="item in professionOptions"
+                                   :key="item.key"
+                                   :label="item.label"
+                                   :value="item.key">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="参与人员" prop="employees">
+                    <el-select v-model="updateBusiness.employees" multiple placeholder="请选择事项">
+                        <el-option v-for="item in employeesOptions"
+                                   :key="item.key"
+                                   :label="item.label"
+                                   :value="item.key">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="上会情况">
+                    <el-switch v-model="updateBusiness.passed"></el-switch>
+                </el-form-item>
+                <el-form-item label="合同费用" prop="contract_fee">
+                    <el-input v-model="updateBusiness.contract_fee"></el-input>
+                </el-form-item>
+                <el-form-item label="评审费用" prop="review_fee">
+                    <el-input v-model="updateBusiness.review_fee"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogUpdateVisible = false">取消</el-button>
+                <el-button :loading="updateLoading" @click="updateCurrent" type="primary">确定</el-button>
+            </div>
+        </el-dialog>
+
     </div>
 </template>
 
@@ -186,21 +233,30 @@ export default {
                 pSize: 20
             },
             selectOptions: [
-                {key: 'twotwo', label:'公司'},
-                {key: 'twotwo', label:'项目类型'},
-                {key: 'threethree', label:'事项'},
-                {key: 'fourfour', label:'参与人员'},
-                {key: 'fivefive', label:'上会情况'},
-                {key: 'sixsix', label:'合同费用'},
-                {key: 'sixsix', label:'评审费用'},
-                {key: 'sevenseven', label:'付款金额'},
-                {key: 'sixsix', label:'差额'},
-                {key: 'sixsix', label:'是否付清'},
+                {key: 'start_time', label:'公司'},
+                {key: 'end_time', label:'项目类型'},
+                {key: 'second_party', label:'公司'},
+                {key: 'type_name', label:'项目类型'},
+                {key: 'profession_name', label:'事项'},
+                {key: 'employees', label:'参与人员'},
+                {key: 'passed', label:'上会情况'},
+                {key: 'contract_fee', label:'合同费用'},
+                {key: 'review_fee', label:'评审费用'},
+                {key: 'pure_income', label:'付款金额'},
+                {key: 'balance', label:'差额'},
+                {key: 'if_paid', label:'是否付清'},
             ],
+            typeOptions: [],
+            professionOptions: [],
+            employeesOptions: [],
+            business: [],
+            downdata: [],
             total: 1,
             loading: false,
             dialogCreateVisible: false,
             createLoading: false,
+            updateLoading: false,
+            dialogUpdateVisible: false,
             createBusiness: {
                 id: '',
                 start_time: '',
@@ -211,63 +267,57 @@ export default {
                 employees: '',
                 passed: false,
                 contract_fee: 0,
-                review_fee: 0,
-                pure_income: 0,
-                balance: 0,
-                if_paid: false
+                review_fee: 0
+            },
+            updateBusiness: {
+                id: '',
+                start_time: '',
+                end_time: '',
+                second_party: '',
+                type_name: '',
+                profession_name: '',
+                employees: '',
+                passed: false,
+                contract_fee: 0,
+                review_fee: 0
+            },
+            rules: {
+                second_party: [{
+                    required: true,
+                    message: '请输入合作方名称',
+                    trigger: 'blur'
+                }, {
+                    pattern: /^[\u0391-\uFFE5A-Za-z]+$/,
+                    message: '公司只能为汉字或英文'
+                }],
+                type_name: [{
+                    required: true,
+                    trigger: 'blur'
+                }],
+                profession_name: [{
+                    required: true,
+                    trigger: 'blur'
+                }],
+                employees: [{
+                    required: true,
+                    trigger: 'blur'
+                }],
+                contract_fee: [{
+                    pattern: /^\d+[\.]{0,1}\d*$/,
+                    message: '合同费用只能输入数字'
+                }],
+                review_fee: [{
+                    pattern: /^\d+[\.]{0,1}\d*$/,
+                    message: '合同费用只能输入数字'
+                }]
             }
         }
     },
     created() {
-        this.getBusiness(this.listQuery)
+        this.getBusiness(this.listQuery);
+        this.getOptions();
     },
     methods: {
-        // getDetail(){
-        //     const items = [{
-        //         id: 1,
-        //         username: '2019-1-2',
-        //         basicSlr: '仔仔公司',
-        //         expertSlr: '矿山项目',
-        //         projectSlr: '应急预案',
-        //         travelExp: '小猴叔叔',
-        //         subsidy: 0,
-        //         other: 0,
-        //         totalSlr: '否',
-        //         rwdPns: -9,
-        //         actualSlr: '通过',
-        //         project: [{
-        //             id: 1,
-        //             projName: '每日优鲜',
-        //             stageSlr: 0,
-        //             finishSlr: 100
-        //         },
-        //         {
-        //             id: 2,
-        //             projName: '每日优鲜',
-        //             stageSlr: 0,
-        //             finishSlr: 100
-        //         }]
-        //     },
-        //     {
-        //         id: 2,
-        //         username: '仔仔',
-        //         basicSlr: 123,
-        //         expertSlr: 456,
-        //         projectSlr: 100,
-        //         travelExp: 50,
-        //         subsidy: 10,
-        //         other: 0,
-        //         totalSlr: 739,
-        //         rwdPns: -9,
-        //         actualSlr: 730,
-        //         project: [{
-        //             id: 2,
-        //             projName: '每日优鲜',
-        //             stageSlr: 0,
-        //             finishSlr: 100
-        //         }]
-        //     }]
-        // },
         getBusiness(list){
             this.loading = false;
             var params
@@ -281,7 +331,7 @@ export default {
                     if(arguments.length === 0){
                         this.downdata = res.data;
                     }else{
-                        this.users = res.data;
+                        this.business = res.data;
                         this.total = res.total;
                     }                                
                 } else {
@@ -292,14 +342,131 @@ export default {
                 console.log(err);
             }) 
         },
+        getOptions() {
+            var option = {}
+            api._get().then(res => {
+                if(res.success){
+                    for(let i in res.data) {
+                        option.key = res.data.id;
+                        option.label = res.data.second_party;
+                    }
+                    this.employeesOptions = this.employeesOptions.push(option);
+                } else {
+                    this.message.error(res.message);
+                }
+            }, err => {
+                console.log(err);
+            });
+            api._getT().then(res => {
+                if(res.success){
+                    for(let i in res.data) {
+                        option.key = res.data.id;
+                        option.label = res.data.type_name;
+                    }
+                    this.typeOptions = this.typeOptions.push(option);
+                } else {
+                    this.message.error(res.message);
+                }
+            }, err => {
+                console.log(err);
+            });
+            api._getP().then(res => {
+                if(res.success){
+                    for(let i in res.data) {
+                        option.key = res.data.id;
+                        option.label = res.data.profession_name;
+                    }
+                    this.professionOptions = this.professionOptions.push(option);
+                } else {
+                    this.message.error(res.message);
+                }
+            }, err => {
+                console.log(err);
+            })
+        },
         removeCurrent(row) {
-
+            this.$confirm('此操作将永久删除 ' + row.second_party + '公司此项业务,是否继续？', {
+                type: 'warning'
+            }).then(() => {
+                api._removeB(row).then(res => {
+                    this.$message.success('成功删除了' + row.second_party +'公司此项业务!');
+                    this.getBusiness(this.listQuery);
+                }).catch(res => {
+                    this.$message.error('删除失败！');
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除！'
+                });
+            });
         },
         setCurrent(row) {
-
+            this.updateBusiness.id = row.id;
+            this.updateBusiness.start_time = row.start_time;
+            this.updateBusiness.end_time = row.end_time;
+            this.updateBusiness.second_party = row.second_party;
+            this.updateBusiness.type_name = row.type_name;
+            this.updateBusiness.profession_name = row.profession_name;
+            this.updateBusiness.employees = row.employees;
+            this.updateBusiness.contract_fee = row.contract_fee;
+            this.updateBusiness.review_fee = row.review_fee;
+            if(row.passed){
+                this.updateBusiness.passed = true;
+            }else {
+                this.updateBusiness.passed = false;
+            } 
+            this.dialogUpdateVisible = true;
         },
         createCurrent() {
-
+            this.$refs.create.validate((valid) => {
+                if(valid) {
+                    this.createLoading = true;
+                    api._post(this.createBusiness).then(res => {
+                        this.$message.success('创建业务成功！');
+                        this.dialogCreateVisible = false;
+                        this.createLoading = false;
+                        this.reset();
+                        this.getBusiness(this.listQuery);
+                    }).catch((res) => {
+                        var data = res;
+                        if(data instanceof Array) {
+                            this.$message.error(data[0]["message"]);
+                        }else if(data instanceof Object) {
+                            this.$message.error(data["message"]);
+                        }
+                        this.createLoading = false;
+                    })   
+                }else {
+                    return false;
+                }
+            })
+        },
+        updateCurrent() {
+            this.$refs.update.validate((valid) => {
+                if(valid) {
+                    this.updateLoading = true;
+                    api._update(this.updateBusiness.id, this.updateBusiness).then(res => {
+                        this.$message.success('修改用户信息成功！');
+                        this.dialogUpdateVisible = false;
+                        this.updateLoading = false;
+                        this.getBusiness(this.listQuery);
+                    }).catch(res => {
+                        var data = res;
+                        if(data instanceof Array) {
+                            this.$message.error(data[0]["message"]);
+                        }else if(data instanceof Object) {
+                            this.$message.error(data["message"]);
+                        }
+                        this.updateLoading = false;
+                    })
+                }else {
+                    return false;
+                }
+            })
+        },
+        reset() {
+            this.$refs.create.resetFields();
         },
         handleClose(done) {
             this.$confirm('确认关闭？').then(() => {
@@ -307,7 +474,31 @@ export default {
             }).catch(() => {});
         },
         handleDownload() {
-        }
+            this.getBusiness();
+            import('../vendor/Export2Excel').then(excel => {
+                var tHeader = ['注册日期']
+                var filterVal = ['create_time']
+                for (var i in this.selectOptions) {
+                    tHeader.push(this.selectOptions[i].label)
+                    filterVal.push(this.selectOptions[i].key)
+                }
+                const data = this.formatJson(filterVal, this.downdata)
+                excel.export_json_to_excel({
+                    header: tHeader,
+                    data,
+                    filename: 'table-list'
+                })
+            })
+        },
+        formatJson(filterVal, jsonData) {
+            return jsonData.map(v => filterVal.map(j => {
+            if (j === 'start_time' || j === 'end_time') {
+                return parseTime(v[j])
+            } else {
+                return v[j]
+            }
+            }))
+        },
     }
 }
 </script>
@@ -320,7 +511,4 @@ export default {
 .edit-input {
     padding-right: 5px;
 }
-.filter-item {
-    width: 90%;
-  }
 </style>
