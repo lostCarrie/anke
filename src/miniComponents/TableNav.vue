@@ -28,7 +28,7 @@
                   style="width:25%;margin-left:2%;"
                   clearable
                   @change="inputChange"></el-input>
-        <el-button icon="el-icon-search" type="primary" style="margin-left:2%;" @click="handleFilter"></el-button>
+        <el-button icon="el-icon-search" type="primary" style="margin-left:2%;" @click="searchClick"></el-button>
     </div>
 </template>
 
@@ -60,7 +60,6 @@ export default {
     computed: {
         chooseDate: {
             get() {
-                console.log('get'+this.cDate)
                 return this.cDate
             },
             set(val) {
@@ -121,15 +120,20 @@ export default {
             })
         },
         selectChange(val) {
-            console.log('selectChange:'+val)
             this.$emit('table-nav', {
                 sOption: val
             })
         },
         inputChange(val) {
-            console.log('inputchange:'+val)
             this.$emit('table-nav', {
                 sInput: val
+            })
+        },
+        searchClick() {
+            this.$emit('table-nav', {
+                cDate: this.chooseDate,
+                sOption: this.selectOptions,
+                sInput: this.searchInput
             })
         }
     }

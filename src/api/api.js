@@ -17,7 +17,6 @@ export const oGet = (url, params) => {
                 return qs.stringify(params, { indices: false })
               }
         }).then(res => {
-            console.log(params)
             resolve(res.data)
         }, err => {
             reject(err)
@@ -88,5 +87,8 @@ export default {
     },
     _getR(params) {
         return oGet('/', params);
+    },
+    _getB(params) {
+        return oGet('/', params)
     }
 }

@@ -21,6 +21,8 @@
                     <!-- 用户列表 -->
                     <el-table :data="users"
                               stripe
+                              fit
+                              highlight-current-row
                               style="width:100%;margin-top:20px;"
                               v-loading="loading"
                               element-loading-text="拼命加载中..."
@@ -172,9 +174,9 @@ export default {
                     message: '请输入姓名',
                     trigger: 'blur'
                 }, {
-                    min: 3,
+                    min: 2,
                     max: 25,
-                    message: '长度在3到25个字符'
+                    message: '长度在2到25个字符'
                 }],
                 telephone_num: [{
                     pattern: /^1[34578]\d{9}$/,
@@ -199,7 +201,7 @@ export default {
             filter: {
                 sorts: ''
             },
-            downdata:'',
+            downdata:undefined,
             loading: false,
             createLoading: false,
             updateLoading: false,
@@ -346,6 +348,7 @@ export default {
         },
         //下载按钮
         handleDownload() {
+            this.getUsers();
             import('../vendor/Export2Excel').then(excel => {
                 var tHeader = ['注册日期']
                 var filterVal = ['create_time']
@@ -353,7 +356,6 @@ export default {
                     tHeader.push(this.selectOptions[i].label)
                     filterVal.push(this.selectOptions[i].key)
                 }
-                this.getUsers();
                 const data = this.formatJson(filterVal, this.downdata)
                 excel.export_json_to_excel({
                     header: tHeader,
@@ -371,8 +373,6 @@ export default {
             }
             }))
         },
-
-
         //手动关闭提示
         handleClose(done) {
             this.$confirm('确认关闭？').then(() => {

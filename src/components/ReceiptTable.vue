@@ -18,6 +18,8 @@
             <el-col :span="24" class="sponge">
                 <el-table :data="receipts"
                           stripe
+                          fit
+                          highlight-current-row
                           show-summary
                           v-loading="loading"
                           element-loading-text="拼命加载中..."
@@ -37,7 +39,7 @@
                     <el-table-column prop="sevenseven" label="账户"/>
                     <el-table-column label="操作" width="250">
                         <template slot-scope="scope">
-                            <el-button type="danger" size="small" @click="removeReceipt(scope.row)">删除</el-button>
+                            <el-button type="danger" size="small" @click="removeCurrent(scope.row)">删除</el-button>
                             <el-button type="success" size="small" @click="setCurrent(scope.row)">编辑</el-button>
                         </template>
                     </el-table-column>
@@ -64,7 +66,7 @@
             </el-form>
             <div>
                 <el-button @click="dialogCreateVisible = false">取消</el-button>
-                <el-button @click="createReceipt" type="primary" :loading="createLoading">确定</el-button>
+                <el-button @click="createCurrent" type="primary" :loading="createLoading">确定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -106,6 +108,7 @@ export default{
                 sixsix: 'Carrie',
                 sevenseven: '广发'                
             }],
+            downdata: undefined,
             total: 1,
             loading: false,
             dialogCreateVisible: false,
@@ -116,41 +119,38 @@ export default{
         this.getReceipts(this.listQuery);
     },
     methods: {
-        getThen(res){
-            var data
-            if(res.success) {
-                if(params){
-                    this.receipts = res.data;
-                    this.total = res.total;
-                }else{
-                    data = res.data
-                }
-            }else {
-                this.$message.error(res.message);
-            }
+        //获取用户数据
+        getReceipts(list){
             this.loading = false;
-            return data
-        },
-        getReceipts(list) {
-            var params,data;
-            this.loading = true;
-            if(list === undefined){
-                params = list;
-            }else {
-                params = this.listQuery;
+            var params
+            if(arguments.length > 0){
+                params = this.listQuery
+            }else{
+                params = list
             }
-            api._getR(params).then(getThen(res), err => {
+            api._getR(params).then(res => {
+                if (res.success){
+                    if(arguments.length === 0){
+                        this.downdata = res.data;
+                    }else{
+                        this.users = res.data;
+                        this.total = res.total;
+                    }                                
+                } else {
+                    this.$message.error(res.message);
+                }
+                this.loading = false;
+            }, err => {
                 console.log(err);
-            })
-            return this.getThen(res)()
+            }) 
         },
-        removeReceipt(row) {
+        removeCurrent(row) {
 
         },
         setCurrent(row) {
 
         },
-        createReceipt() {
+        createCurrent() {
 
         },
         handleClose() {
