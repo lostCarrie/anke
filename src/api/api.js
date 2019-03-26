@@ -59,8 +59,7 @@ export const oRemove = (url, params) => {
     })
 }
 export default {
-    //此处是接口
-    //获取用户数据
+    //获取数据接口
     _get(params) {
         return oGet('/users', params);
     },
@@ -70,20 +69,42 @@ export default {
     _getB(params) {
         return oGet('/', params);
     },
+    _getS(params) {
+        return oGet('/', params);
+    },
     _getT(params) {
         return oGet('/', params);
     },
     _getP(params) {
         return oGet('/', params);
     },
-    //新建用户
+    //新建数据接口
     _post(params) {
         return oPost('/users', params)
     },
-    //更新用户
-    _update (userid, params) {
-        return oUpdate('/users/'+userid, params)
+    _postB(params) {
+        return oPost('/users', params)
     },
+    _postR(params) {
+        return oPost('/users', params)
+    },
+    _postS(params) {
+        return oPost('/users', params)
+    },
+    //更新数据接口
+    _update(id, params) {
+        return oUpdate('/users/'+id, params)
+    },
+    _updateB(id, params) {
+        return oUpdate('/users/'+id, params)
+    },
+    _updateR(id, params) {
+        return oUpdate('/users/'+id, params)
+    },
+    _updateS(id, params) {
+        return oUpdate('/users/'+id, params)
+    },
+    //删除数据接口
     _remove(params){
         return oRemove('/users/'+ params.user_id);
     },
@@ -95,7 +116,13 @@ export default {
         ids = ids.join(",")
         return oRemove('/users/'+ids)
     },
-    _remove(params){
+    _removeB(params){
+        return oRemove('/'+ params.id);
+    },
+    _removeR(params){
+        return oRemove('/'+ params.id);
+    },
+    _removeS(params){
         return oRemove('/'+ params.id);
     },
 }

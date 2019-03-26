@@ -61,7 +61,7 @@
                                         label="是否付清">
                     </el-table-column>
                     <el-table-column label="操作"
-                                     width="250">          
+                                     width="150">          
                         <template slot-scope="scope">
                             <el-button type="danger" size="small" @click="removeCurrent(scope.row)">删除</el-button>
                             <el-button type="success" size="small" @click="setCurrent(scope.row)">编辑</el-button>
@@ -422,7 +422,7 @@ export default {
             this.$refs.create.validate((valid) => {
                 if(valid) {
                     this.createLoading = true;
-                    api._post(this.createBusiness).then(res => {
+                    api._postB(this.createBusiness).then(res => {
                         this.$message.success('创建业务成功！');
                         this.dialogCreateVisible = false;
                         this.createLoading = false;
@@ -446,7 +446,7 @@ export default {
             this.$refs.update.validate((valid) => {
                 if(valid) {
                     this.updateLoading = true;
-                    api._update(this.updateBusiness.id, this.updateBusiness).then(res => {
+                    api._updateB(this.updateBusiness.id, this.updateBusiness).then(res => {
                         this.$message.success('修改用户信息成功！');
                         this.dialogUpdateVisible = false;
                         this.updateLoading = false;
@@ -502,13 +502,3 @@ export default {
     }
 }
 </script>
-
-<style>
-.inner-ctt {
-    width: 100%;
-    height: 100%;
-}
-.edit-input {
-    padding-right: 5px;
-}
-</style>

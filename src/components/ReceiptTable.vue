@@ -127,13 +127,13 @@
                    :before-close="handleClose">
             <el-form ref="update" status-icon :rules="rules" :model="updateReceipt" label-width="100px" label-position="left">
                 <el-form-item label="日期" prop="oneone">
-                    <el-date-picker v-model="createReceipt.oneone" type="date"></el-date-picker>
+                    <el-date-picker v-model="updateReceipt.oneone" type="date"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="公司" prop="twotwo">
-                    <el-input v-model="createReceipt.twotwo"></el-input>
+                    <el-input v-model="updateReceipt.twotwo"></el-input>
                 </el-form-item>
                 <el-form-item label="项目类型" prop="threethreel">
-                    <el-select v-model="createReceipt.threethreel" placeholder="请选择项目类型">
+                    <el-select v-model="updateReceipt.threethreel" placeholder="请选择项目类型">
                         <el-option v-for="item in typeOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -142,7 +142,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="事项" prop="threethree">
-                    <el-select v-model="createReceipt.threethree" multiple placeholder="请选择事项">
+                    <el-select v-model="updateReceipt.threethree" multiple placeholder="请选择事项">
                         <el-option v-for="item in professionOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -151,10 +151,10 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="数额" prop="fourfour">
-                    <el-input v-model="createReceipt.fourfour"></el-input>
+                    <el-input v-model="updateReceipt.fourfour"></el-input>
                 </el-form-item>
                 <el-form-item label="经办人" prop="fivefive">
-                    <el-select v-model="createReceipt.fivefive" multiple placeholder="请选择事项">
+                    <el-select v-model="updateReceipt.fivefive" multiple placeholder="请选择事项">
                         <el-option v-for="item in fivefiveOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -163,7 +163,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="接收人" prop="sixsix">
-                    <el-select v-model="createReceipt.sixsix" multiple placeholder="请选择事项">
+                    <el-select v-model="updateReceipt.sixsix" multiple placeholder="请选择事项">
                         <el-option v-for="item in sixsixOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -172,7 +172,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="账户" prop="sevenseven">
-                    <el-select v-model="createReceipt.sevenseven" multiple placeholder="请选择事项">
+                    <el-select v-model="updateReceipt.sevenseven" multiple placeholder="请选择事项">
                         <el-option v-for="item in sevensevenOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -369,7 +369,7 @@ export default{
             this.$confirm('此操作将永久删除 ' + row.twotwo + '公司此项记录,是否继续？', {
                 type: 'warning'
             }).then(() => {
-                api._removeB(row).then(res => {
+                api._removeR(row).then(res => {
                     this.$message.success('成功删除了' + row.twotwo +'公司此项业务!');
                     this.getBusiness(this.listQuery);
                 }).catch(res => {
@@ -398,7 +398,7 @@ export default{
             this.$refs.update.validate((valid) => {
                 if(valid) {
                     this.updateLoading = true;
-                    api._update(this.updateReceipt.id, this.updateReceipt).then(res => {
+                    api._updateR(this.updateReceipt.id, this.updateReceipt).then(res => {
                         this.$message.success('修改用户信息成功！');
                         this.dialogUpdateVisible = false;
                         this.updateLoading = false;
@@ -421,7 +421,7 @@ export default{
             this.$refs.create.validate((valid) => {
                 if(valid) {
                     this.createLoading = true;
-                    api._post(this.createReceipt).then(res => {
+                    api._postR(this.createReceipt).then(res => {
                         this.$message.success('创建记录成功！');
                         this.dialogCreateVisible = false;
                         this.createLoading = false;

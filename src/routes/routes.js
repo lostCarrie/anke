@@ -1,7 +1,7 @@
 //引入路由组件
 import Layout from '../layout/Layout.vue'
 import TotalTable from '../components/TotalTable.vue'
-import DetailTable from '../components/DetailTable.vue'
+import SalaryTable from '../components/SalaryTable.vue'
 import User from '../components/User.vue'
 import BusinessTable from '../components/BusinessTable.vue'
 import ReceiptTable from '../components/ReceiptTable.vue'
@@ -21,9 +21,9 @@ const routes = [
                 component: TotalTable
             },
             {
-                path: 'DetailTable',
-                name: 'DetailTable',
-                component: DetailTable
+                path: 'SalaryTable',
+                name: 'SalaryTable',
+                component: SalaryTable
             },
             {
                 path: 'User',
