@@ -117,7 +117,7 @@
                     </el-select>
                 </el-form-item>
             </el-form>
-            <div>
+            <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogCreateVisible = false">取消</el-button>
                 <el-button @click="createCurrent" type="primary" :loading="createLoading">确定</el-button>
             </div>

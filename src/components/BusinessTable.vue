@@ -100,9 +100,8 @@
         </el-row>
         <el-dialog title="创建新业务"
                    :visible.sync="dialogCreateVisible"
-                   width="30%"
                    :before-close="handleClose">
-            <el-form ref="create" status-icon :rules="rules" :model="createBusiness" label-width="100px" label-position="left">
+            <el-form ref="create" status-icon :rules="rules" :model="createBusiness" label-width="100px" label-position="right">
                 <el-form-item label="开始日期" prop="start_time">
                     <el-date-picker v-model="createBusiness.start_time" type="date"></el-date-picker>
                 </el-form-item>
