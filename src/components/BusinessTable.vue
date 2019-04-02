@@ -112,7 +112,7 @@
                     <el-input v-model="createBusiness.second_party"></el-input>
                 </el-form-item>
                 <el-form-item label="项目类型" prop="type_name">
-                    <el-select v-model="createBusiness.type_name" placeholder="请选择项目类型">
+                    <el-select v-model="createBusiness.type_name" placeholder="请选择项目类型" filterable allow-create>
                         <el-option v-for="item in typeOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -121,7 +121,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="事项" prop="profession_name">
-                    <el-select v-model="createBusiness.profession_name" multiple placeholder="请选择事项">
+                    <el-select v-model="createBusiness.profession_name" multiple placeholder="请选择事项" filterable allow-create>
                         <el-option v-for="item in professionOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -130,7 +130,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="参与人员" prop="employees">
-                    <el-select v-model="createBusiness.employees" multiple placeholder="请选择事项">
+                    <el-select v-model="createBusiness.employees" multiple placeholder="请选择参与人员" filterable allow-create>
                         <el-option v-for="item in employeesOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -167,7 +167,7 @@
                     <el-input v-model="updateBusiness.second_party"></el-input>
                 </el-form-item>
                 <el-form-item label="项目类型" prop="type_name">
-                    <el-select v-model="updateBusiness.type_name" placeholder="请选择项目类型">
+                    <el-select v-model="updateBusiness.type_name" placeholder="请选择项目类型" filterable allow-create>
                         <el-option v-for="item in typeOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -176,7 +176,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="事项" prop="profession_name">
-                    <el-select v-model="updateBusiness.profession_name" multiple placeholder="请选择事项">
+                    <el-select v-model="updateBusiness.profession_name" multiple placeholder="请选择事项" filterable allow-create>
                         <el-option v-for="item in professionOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -185,7 +185,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="参与人员" prop="employees">
-                    <el-select v-model="updateBusiness.employees" multiple placeholder="请选择事项">
+                    <el-select v-model="updateBusiness.employees" multiple placeholder="请选择参与人员" filterable allow-create>
                         <el-option v-for="item in employeesOptions"
                                    :key="item.key"
                                    :label="item.label"

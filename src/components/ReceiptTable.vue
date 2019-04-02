@@ -69,7 +69,7 @@
                     <el-input v-model="createReceipt.twotwo"></el-input>
                 </el-form-item>
                 <el-form-item label="项目类型" prop="threethreel">
-                    <el-select v-model="createReceipt.threethreel" placeholder="请选择项目类型">
+                    <el-select v-model="createReceipt.threethreel" placeholder="请选择项目类型" filterable allow-create>
                         <el-option v-for="item in typeOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -78,7 +78,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="事项" prop="threethree">
-                    <el-select v-model="createReceipt.threethree" multiple placeholder="请选择事项">
+                    <el-select v-model="createReceipt.threethree" multiple placeholder="请选择事项" filterable allow-create>
                         <el-option v-for="item in professionOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -90,7 +90,7 @@
                     <el-input v-model="createReceipt.fourfour"></el-input>
                 </el-form-item>
                 <el-form-item label="经办人" prop="fivefive">
-                    <el-select v-model="createReceipt.fivefive" multiple placeholder="请选择事项">
+                    <el-select v-model="createReceipt.fivefive" multiple placeholder="请选择经办人" filterable allow-create>
                         <el-option v-for="item in fivefiveOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -99,7 +99,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="接收人" prop="sixsix">
-                    <el-select v-model="createReceipt.sixsix" multiple placeholder="请选择事项">
+                    <el-select v-model="createReceipt.sixsix" multiple placeholder="请选择接收人" filterable allow-create>
                         <el-option v-for="item in sixsixOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -108,7 +108,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="账户" prop="sevenseven">
-                    <el-select v-model="createReceipt.sevenseven" multiple placeholder="请选择事项">
+                    <el-select v-model="createReceipt.sevenseven" multiple placeholder="请选择账户" filterable allow-create>
                         <el-option v-for="item in sevensevenOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -133,7 +133,7 @@
                     <el-input v-model="updateReceipt.twotwo"></el-input>
                 </el-form-item>
                 <el-form-item label="项目类型" prop="threethreel">
-                    <el-select v-model="updateReceipt.threethreel" placeholder="请选择项目类型">
+                    <el-select v-model="updateReceipt.threethreel" placeholder="请选择项目类型" filterable allow-create>
                         <el-option v-for="item in typeOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -142,7 +142,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="事项" prop="threethree">
-                    <el-select v-model="updateReceipt.threethree" multiple placeholder="请选择事项">
+                    <el-select v-model="updateReceipt.threethree" multiple placeholder="请选择事项" filterable allow-create>
                         <el-option v-for="item in professionOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -154,7 +154,7 @@
                     <el-input v-model="updateReceipt.fourfour"></el-input>
                 </el-form-item>
                 <el-form-item label="经办人" prop="fivefive">
-                    <el-select v-model="updateReceipt.fivefive" multiple placeholder="请选择事项">
+                    <el-select v-model="updateReceipt.fivefive" multiple placeholder="请选择经办人" filterable allow-create>
                         <el-option v-for="item in fivefiveOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -163,7 +163,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="接收人" prop="sixsix">
-                    <el-select v-model="updateReceipt.sixsix" multiple placeholder="请选择事项">
+                    <el-select v-model="updateReceipt.sixsix" multiple placeholder="请选择接收人" filterable allow-create>
                         <el-option v-for="item in sixsixOptions"
                                    :key="item.key"
                                    :label="item.label"
@@ -172,7 +172,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="账户" prop="sevenseven">
-                    <el-select v-model="updateReceipt.sevenseven" multiple placeholder="请选择事项">
+                    <el-select v-model="updateReceipt.sevenseven" multiple placeholder="请选择账户" filterable allow-create>
                         <el-option v-for="item in sevensevenOptions"
                                    :key="item.key"
                                    :label="item.label"

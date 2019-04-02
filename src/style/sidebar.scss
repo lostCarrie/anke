@@ -1,0 +1,49 @@
+@import './variables.scss';
+#app {
+
+    .el-header {
+        padding: 10px;
+        border-bottom: 1px solid #CBCED0;
+        height: 50px ! important;
+    }
+    .el-main {
+        padding: 20px;
+    }
+
+    .el-container,.el-main,.el-header{
+        width: 100%;
+        height: 100%;
+    }
+
+    .main-container {
+        min-height: 100%;
+        transition: margin-left .28s;
+        margin-left: $sideBarWidth;
+        position: relative;
+    }
+    .el-aside {
+        transition: width 0.28s;
+        width: $sideBarWidth !important;
+        height: 100%;
+        position: fixed;
+        font-size: 0px;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1001;
+        overflow: hidden;
+    }
+    .el-menu {
+        border: none;
+        height: 100%;
+        width: 100% !important;
+    }
+    .hideSidebar {
+        .el-aside {
+            width: 54px !important;
+        }
+        .main-container {
+            margin-left: 54px;
+        }
+    }
+}

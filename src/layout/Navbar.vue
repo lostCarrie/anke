@@ -3,7 +3,9 @@
              router
              text-color="#bfcbd9"
              active-text-color="#409EFF"
-             background-color="rgb(48, 65, 86)">
+             background-color="rgb(48, 65, 86)"
+             :collapse="isCollapse"
+             mode="vertical">
         <el-submenu index="1">
             <template slot="title">
                 <i class="el-icon-menu"></i>
@@ -34,10 +36,14 @@
     </el-menu>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
-    date() {
-        return {
-            
+    computed: {
+        ...mapGetters([
+            'sidebar'
+        ]),
+        isCollapse(){
+            return !this.sidebar.opened;
         }
     }
 }
