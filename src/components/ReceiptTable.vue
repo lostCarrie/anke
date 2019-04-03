@@ -26,9 +26,9 @@
                           style="width:100%;margin-top:20px;"
                           :default-sort="{prop:['oneone','twotwo'],order: 'descending'}"
                           class="main-table">
-                    <el-table-column prop="oneone" label="日期" sortable min-width="100px">
+                    <el-table-column prop="oneone" label="日期" sortable>
                         <template slot-scope="scope">
-                            <span> {{ scope.row.oneone | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+                            <span> {{ scope.row.oneone | parseTime('{y}-{m}-{d}') }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column prop="twotwo" label="公司" sortable/>

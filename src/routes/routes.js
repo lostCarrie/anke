@@ -3,6 +3,7 @@ import Layout from '../layout/Layout.vue'
 import TotalTable from '../components/TotalTable.vue'
 import SalaryTable from '../components/SalaryTable.vue'
 import User from '../components/User.vue'
+import HelloWorld from '../components/HelloWorld.vue'
 import BusinessTable from '../components/BusinessTable.vue'
 import ReceiptTable from '../components/ReceiptTable.vue'
 //定义路由
@@ -16,9 +17,9 @@ const routes = [
         component: Layout,
         children: [
             {
-                path: 'TotalTable',
-                name: 'TotalTable',
-                component: TotalTable
+                path: 'HelloWorld',
+                name: 'HelloWorld',
+                component: HelloWorld
             },
             {
                 path: 'SalaryTable',

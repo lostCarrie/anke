@@ -23,42 +23,31 @@
                           v-loading="loading"
                           element-loading-text="拼命加载中..."
                           :default-sort="{prop:['oneone','twotwo'],order: 'descending'}"
-                          class="main-table">
-                    <el-table-column prop="start_time"
-                                        label="开始日期">
+                          class="main-table"
+                          @expand-change="getReceipts(row.partyid)">
+                    <el-table-column prop="start_time" label="开始日期">
+                        <template slot-scope="scope">
+                            <span> {{ scope.row.start_time | parseTime('{y}-{m}-{d}') }}</span>
+                        </template>
                     </el-table-column>
-                    <el-table-column prop="end_time"
-                                        label="结束日期">
+                    <el-table-column prop="end_time" label="结束日期">
+                        <template slot-scope="scope">
+                            <span> {{ scope.row.end_time | parseTime('{y}-{m}-{d}') }}</span>
+                        </template>
                     </el-table-column>
-                    <el-table-column prop="second_party"
-                                        label="公司">
-                    </el-table-column>
-                    <el-table-column prop="type_name"
-                                        label="项目类型">
-                    </el-table-column>
-                    <el-table-column prop="profession_name"
-                                        label="事项">
-                    </el-table-column>
-                    <el-table-column prop="employees"
-                                        label="参与人员">
-                    </el-table-column>
-                    <el-table-column prop="passed"
-                                        label="上会情况">
-                    </el-table-column>
-                    <el-table-column prop="contract_fee"
-                                        label="合同费用">
-                    </el-table-column>
-                    <el-table-column prop="review_fee"
-                                        label="评审费用">
-                    </el-table-column>
-                    <el-table-column prop="pure_income"
-                                        label="付款金额">
-                    </el-table-column>
-                    <el-table-column prop="balance"
-                                        label="差额">
-                    </el-table-column>
-                    <el-table-column prop="if_paid"
-                                        label="是否付清">
+                    <el-table-column prop="second_party" label="公司"/>
+                    <el-table-column prop="type_name" label="项目类型"/>
+                    <el-table-column prop="profession_name" label="事项"/>
+                    <el-table-column prop="employees" label="参与人员"/>
+                    <el-table-column prop="passed" label="上会情况"/>
+                    <el-table-column prop="contract_fee" label="合同费用"/>
+                    <el-table-column prop="review_fee"  label="评审费用"/>
+                    <el-table-column prop="pure_income" label="付款金额"/>
+                    <el-table-column prop="balance" label="差额"/>
+                    <el-table-column prop="if_paid" label="是否付清">
+                        <template slot-scope="scope">
+                            <el-tag :type="scope.row.if_paid == 0 ? 'primary' : 'success'" close-transition>{{ scope.row.if_paid == 1 ? "付清" : "未付清"}}</el-tag>
+                        </template>
                     </el-table-column>
                     <el-table-column label="操作"
                                      width="150">          
@@ -68,25 +57,23 @@
                         </template>
                     </el-table-column>
                     <el-table-column type="expand">
-                        <template slot-scope="props">
-                            <el-table :data="props.row.project"
+                        <template>
+                            <el-table :data="project"
                                         size="mini"
                                         border>
                                 <el-table-column prop="projName"
                                                     label="付款次数">
                                 </el-table-column>
-                                <el-table-column prop="finishSlr"
-                                                    label="付款金额">
+                                <el-table-column prop="oneone" label="日期" sortable>
+                                    <template slot-scope="scope">
+                                        <span> {{ scope.row.oneone | parseTime('{y}-{m}-{d}') }}</span>
+                                    </template>
                                 </el-table-column>
-                                <el-table-column prop="finishSlr"
-                                                    label="经办人">
-                                </el-table-column>
-                                <el-table-column prop="finishSlr"
-                                                    label="接收人">
-                                </el-table-column>
-                                <el-table-column prop="finishSlr"
-                                                    label="账户">
-                                </el-table-column>
+                                <el-table-column prop="threethree" label="事项"/>
+                                <el-table-column prop="fourfour" label="数额"/>
+                                <el-table-column prop="fivefive" label="经办人"/>
+                                <el-table-column prop="sixsix" label="接收人"/>
+                                <el-table-column prop="sevenseven" label="账户"/>
                             </el-table>
                         </template>
                     </el-table-column>
@@ -208,7 +195,6 @@
                 <el-button :loading="updateLoading" @click="updateCurrent" type="primary">确定</el-button>
             </div>
         </el-dialog>
-
     </div>
 </template>
 
@@ -309,7 +295,8 @@ export default {
                     pattern: /^\d+[\.]{0,1}\d*$/,
                     message: '合同费用只能输入数字'
                 }]
-            }
+            },
+            receipts: [],
         }
     },
     created() {
@@ -463,6 +450,18 @@ export default {
                     return false;
                 }
             })
+        },
+        getReceipts(params){
+            api._getR(params).then(res => {
+                if (res.success){
+                    this.receipts = res.data;                               
+                } else {
+                    this.$message.error(res.message);
+                }
+                this.loading = false;
+            }, err => {
+                console.log(err);
+            }) 
         },
         reset() {
             this.$refs.create.resetFields();

@@ -13,7 +13,7 @@
             </template>
             <el-menu-item-group>
                 <!-- <template slot="title">分组一</template>-->
-                <el-menu-item index="/TotalTable">汇总工资单</el-menu-item>
+                <el-menu-item index="/HelloWorld">汇总工资单</el-menu-item>
                 <el-menu-item index="/SalaryTable">详细工资单</el-menu-item>
             </el-menu-item-group>
         </el-submenu>
