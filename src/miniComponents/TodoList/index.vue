@@ -6,8 +6,12 @@
         <section v-show="todos.length" class="main">
             <!-- <input type="checkbox"/>
             <label/> -->
-            <ul>
-                <todo/>
+            <ul class="todo-list">
+                <todo v-for="(todo, index) in filteredTodos"
+                      :key="index"
+                      :todo="todo"
+                      @togoTodo="toggleTodo"
+                      @deleteTodo="deleteTodo"/>
             </ul>
         </section>
         <footer v-show="todos.length" class="footer">
@@ -19,7 +23,12 @@
 </template>
 <script>
 import Todo from './Todo.vue'
-
+const STORAGE_KEY = 'todos';
+const filters = {
+    all: todos => todos,
+    active: todos => todos.filter(todo => !todo.done),
+    completed: todos => todos.filter(todos => todo.done)
+}
 const defalutList = [
   { text: 'star this repository', done: false },
   { text: 'fork this repository', done: false },
@@ -36,11 +45,32 @@ export default {
     },
     data() {
         return {
-            todos: defalutList
+            todos: defalutList,
+            filters,
+            visibility: 'all'
+        }
+    },
+    computed:{
+        filteredTodos() {
+            return filters[this.visibility](this.todos);
+        }
+    },
+    methods: {
+        setLocalStorage() {
+            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(this.todos));
+        },
+        toggleTodo(val) {
+            val.done = !val.done;
+            this.setLocalStorage();
+        },
+        deleteTodo(todo) {
+            this.todos.splice(this.todos.indexOf(todo), 1);
+            this.setLocalStorage();
         }
     }
 }
 </script>
-<style>
-@import './index.scss'
+
+<style lang="scss">
+    @import './index.scss';
 </style>
