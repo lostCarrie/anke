@@ -6,11 +6,12 @@ import User from '../components/User.vue'
 import HelloWorld from '../components/HelloWorld.vue'
 import BusinessTable from '../components/BusinessTable.vue'
 import ReceiptTable from '../components/ReceiptTable.vue'
+import Login from '../components/login'
 //定义路由
 const routes = [
     {
         path: '/',
-        component: Layout
+        component: Login
     },
     {
         path: '/',
