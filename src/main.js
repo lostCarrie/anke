@@ -7,7 +7,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '../theme/index.css'
 
 import VueRouter from 'vue-router' //引入路由
-import routes from './routes/routes.js'//引入路由配置
+import {routes, asyncRouterMap} from './routes/routes.js'//引入路由配置
 import * as filters from './filters' //引入过滤器
 import './style/index.scss'//引入全局样式
 import store from './store'
@@ -24,6 +24,27 @@ Vue.config.productionTip = false
 //创建router实例，传相应配置
 const router = new VueRouter({
   routes
+})
+router.beforeEach((to, from, next) => {
+  if (store.getters.token) {
+    if (to.path === '/login') {
+      next({ path: '/' });
+    } else {
+      if (store.getters.roles.length === 0) {
+        store.dispatch('GetInfo').then(res => {
+          const roles = res.data.role;
+          store.dispatch('GenerateRoutes', { roles }).then(() => {
+            router.addRoutes(store.getters.addRoutes);
+            next({ ...to, replace: true })
+          })
+        }).catch(err => {
+          console.log(err);
+        });
+      } else {
+        next()
+      }
+    }
+  }
 })
 new Vue({
   render: h => h(App),
